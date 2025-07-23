@@ -1,12 +1,13 @@
 import pygame
 
+from configs.main_settings import SCREEN_SIZE
 from source.MainLoop import MainLoop
 
 
 class MainClass:
 
     def __init__(self):
-        self.__screen = pygame.display.set_mode(size=...)   # size = config.SCREEN_SIZE
+        self.__screen = pygame.display.set_mode(size=SCREEN_SIZE)
         self.__main_loop = MainLoop()
 
     def run(self) -> None:
