@@ -6,9 +6,13 @@ class MainLoop:
 
     def __init__(self):
         self.__running = True
+        self.__frames = ...
 
     def run(self) -> None:
         while self.__running:
+
+            pygame.time.Clock().tick(self.__frames)
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
