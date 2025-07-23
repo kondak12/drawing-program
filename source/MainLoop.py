@@ -1,12 +1,15 @@
 import pygame
 import sys
 
+import configs.main_settings, configs.colors
+
 
 class MainLoop:
 
-    def __init__(self):
+    def __init__(self, display: pygame.display):
         self.__running = True
-        self.__frames = ...
+        self.__frames = configs.main_settings.FPS
+        self.__display = display
 
     def run(self) -> None:
         while self.__running:
@@ -17,6 +20,11 @@ class MainLoop:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+                elif pygame.mouse.get_pressed()[0]:
+                    pygame.draw.circle(self.__display, configs.colors.RED, pygame.mouse.get_pos(), 50)
+
+            pygame.display.flip()
 
     def get_running(self) -> bool:
         return self.__running
