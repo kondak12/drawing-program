@@ -1,2 +1,5 @@
+from source.MainClass import MainClass
+
+
 if __name__ == "__main__":
-    pass
+    MainClass().run()
