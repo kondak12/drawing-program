@@ -1,3 +1,3 @@
-class EventHandler:
+class InputSystem:
 
     ...
