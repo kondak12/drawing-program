@@ -14,6 +14,18 @@ class Instrument(ABC):
     def draw(self) -> None:
         pass
 
+    @abstractmethod
+    def set_draw_color(self, new_color: pygame.color.Color) -> None:
+        pass
+
+    @abstractmethod
+    def set_mouse_pos(self, new_pos: (int, int)) -> None:
+        pass
+
+    @abstractmethod
+    def set_draw_radius(self, new_radius: int) -> None:
+        pass
+
 
 class BrushTool(Instrument):
 
@@ -34,3 +46,15 @@ class BrushTool(Instrument):
                               (self.mouse_pos[0] - (self.__sprite_size[0] // 2),
                                self.mouse_pos[1] - self.__sprite_size[1] // 2)
                               )
+
+    def set_draw_color(self, new_color: pygame.color.Color) -> None:
+        self.draw_color = new_color
+
+    def set_mouse_pos(self, new_pos: (int, int)) -> None:
+        self.mouse_pos = new_pos
+
+    def set_draw_radius(self, new_radius: int) -> None:
+        self.draw_radius = new_radius
+
+    def set_sprite_path(self, new_path: str) -> None:
+        self.__sprite_path = new_path
