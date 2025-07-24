@@ -1,6 +1,6 @@
 import pygame
 
-import Instruments
+from source import Instruments
 from configs import colors
 
 
@@ -9,9 +9,9 @@ class Hand:
     def __init__(self, drawing_surface, sprite_path=None):
         self.__drawing_surface = drawing_surface
         self.__sprite_path = sprite_path
-        self.__main_instrument = Instruments.BrushTool(self.__drawing_surface, self.__main_color, self.position(), self.__line_size, self.__sprite_path)
         self.__main_color = colors.BLACK
         self.__line_size = 10
+        self.__main_instrument = Instruments.BrushTool(self.__drawing_surface, self.__main_color, self.position(), self.__line_size, self.__sprite_path)
 
     @staticmethod
     def position() -> (int, int):
