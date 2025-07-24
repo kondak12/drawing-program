@@ -6,15 +6,18 @@ from configs import colors
 
 class Hand:
 
-    def __init__(self):
-        self.__main_instrument = Instruments.BrushTool()
+    def __init__(self, drawing_surface, sprite_path=None):
+        self.__drawing_surface = drawing_surface
+        self.__sprite_path = sprite_path
+        self.__main_instrument = Instruments.BrushTool(self.__drawing_surface, self.__main_color, self.position(), self.__line_size, self.__sprite_path)
         self.__main_color = colors.BLACK
         self.__line_size = 10
 
-    def position(self):
+    @staticmethod
+    def position() -> (int, int):
         return pygame.mouse.get_pos()
 
-    def draw(self):
+    def draw(self) -> None:
         self.__main_instrument.draw()
 
     def get_main_color(self) -> colors.color:
