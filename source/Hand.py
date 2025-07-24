@@ -10,12 +10,21 @@ class Hand:
         self.__drawing_surface = drawing_surface
         self.__sprite_path = sprite_path
         self.__main_color = colors.BLACK
-        self.__line_size = 10
-        self.__main_instrument = Instruments.BrushTool(self.__drawing_surface, self.__main_color, self.position(), self.__line_size, self.__sprite_path)
+        self.__line_size = 30
+        self.__main_instrument = Instruments.BrushTool(self.__drawing_surface,
+                                                       self.__main_color,
+                                                       pygame.mouse.get_pos(),
+                                                       self.__line_size,
+                                                       self.__sprite_path
+                                                       )
 
-    @staticmethod
-    def position() -> (int, int):
-        return pygame.mouse.get_pos()
+    def update_position(self):
+        self.__main_instrument = Instruments.BrushTool(self.__drawing_surface,
+                                                       self.__main_color,
+                                                       pygame.mouse.get_pos(),
+                                                       self.__line_size,
+                                                       self.__sprite_path
+                                                       )
 
     def draw(self) -> None:
         self.__main_instrument.draw()
