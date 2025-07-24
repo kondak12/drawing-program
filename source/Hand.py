@@ -19,12 +19,7 @@ class Hand:
                                                        )
 
     def update_position(self):
-        self.__main_instrument = Instruments.BrushTool(self.__drawing_surface,
-                                                       self.__main_color,
-                                                       pygame.mouse.get_pos(),
-                                                       self.__line_size,
-                                                       self.__sprite_path
-                                                       )
+        self.__main_instrument.set_mouse_pos(pygame.mouse.get_pos())
 
     def draw(self) -> None:
         self.__main_instrument.draw()

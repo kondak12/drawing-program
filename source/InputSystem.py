@@ -17,8 +17,8 @@ class InputSystem:
                 pygame.quit()
                 sys.exit()
 
-            elif pygame.mouse.get_pressed()[0]:
-                self.__hand.update_position()
-                self.__hand.draw()
+        self.__hand.update_position()
 
-            pygame.display.flip()
+        self.__hand.draw()
+
+        pygame.display.flip()
