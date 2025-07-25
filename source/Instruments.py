@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import pygame
 
+from configs import instruments_settings
+
 
 class Instrument(ABC):
 
@@ -58,3 +60,22 @@ class BrushTool(Instrument):
 
     def set_sprite_path(self, new_path: str) -> None:
         self.__sprite_path = new_path
+
+
+class PatternTool(Instrument):
+
+    def __init__(self, display, draw_color, mouse_pos, draw_radius):
+        super().__init__(display, draw_color, mouse_pos, draw_radius)
+        self.__figure_type = instruments_settings.PATTERN_TYPE_RECT
+
+    def draw(self) -> None:
+        pass
+
+    def set_draw_color(self, new_color: pygame.color.Color) -> None:
+        self.draw_color = new_color
+
+    def set_mouse_pos(self, new_pos: (int, int)) -> None:
+        self.mouse_pos = new_pos
+
+    def set_draw_radius(self, new_radius: int) -> None:
+        self.draw_radius = new_radius

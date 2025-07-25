@@ -1,0 +1,2 @@
+PATTERN_TYPE_CIRCLE = 'circle'
+PATTERN_TYPE_RECT = 'rect'
