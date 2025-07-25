@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import pygame
 
-from configs import instruments_settings
+from configs import instruments_settings, colors
 
 
 class Instrument(ABC):
@@ -67,9 +67,31 @@ class PatternTool(Instrument):
     def __init__(self, display, draw_color, mouse_pos, draw_radius):
         super().__init__(display, draw_color, mouse_pos, draw_radius)
         self.__figure_type = instruments_settings.PATTERN_TYPE_RECT
+        self.__start_pos = None
+        self.__new_surface = None
 
     def draw(self) -> None:
-        pass
+        if pygame.mouse.get_pressed()[0] and self.__figure_type == instruments_settings.PATTERN_TYPE_RECT:
+
+            if self.__start_pos is None:
+                self.__start_pos = self.mouse_pos
+
+            width = self.mouse_pos[0] - self.__start_pos[0]
+            height = self.mouse_pos[1] - self.__start_pos[1]
+
+            if width > -1 and height > -1:
+                self.__new_surface = pygame.Surface((width, height))
+                self.display.blit(self.__new_surface, (self.__start_pos[0], self.__start_pos[1]))
+
+            pygame.draw.rect(self.display,
+                             self.draw_color,
+                             pygame.Rect(self.__start_pos[0], self.__start_pos[1], width, height)
+                             )
+
+            self.__new_surface.fill(colors.WHITE)
+
+        else:
+            self.__start_pos = None
 
     def set_draw_color(self, new_color: pygame.color.Color) -> None:
         self.draw_color = new_color
@@ -79,3 +101,6 @@ class PatternTool(Instrument):
 
     def set_draw_radius(self, new_radius: int) -> None:
         self.draw_radius = new_radius
+
+    def set_figure_type(self, new_type) -> None:
+        self.__figure_type = new_type
