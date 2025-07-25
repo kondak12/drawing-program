@@ -1,7 +1,7 @@
 import pygame
 
 from source import Instruments
-from configs import colors
+from configs import colors, main_settings
 
 
 class Hand:
@@ -23,6 +23,14 @@ class Hand:
 
     def draw(self) -> None:
         self.__main_instrument.draw()
+
+    def wash_draw(self) -> None:
+        if pygame.mouse.get_pressed()[2]:
+            pygame.draw.circle(self.__drawing_surface,
+                               main_settings.BG_COLOR,
+                               pygame.mouse.get_pos(),
+                               self.__line_size
+                               )
 
     def get_main_color(self) -> colors.color:
         return self.__main_color

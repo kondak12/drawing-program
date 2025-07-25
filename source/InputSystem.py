@@ -21,4 +21,6 @@ class InputSystem:
 
         self.__hand.draw()
 
+        self.__hand.wash_draw()
+
         pygame.display.flip()
