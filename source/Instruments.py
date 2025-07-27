@@ -58,6 +58,15 @@ class PatternTool(Instrument):
         self.__start_pos = None
         self.__new_surface = None
 
+    def __create_new_surface(self, width, height, dest_x, dest_y) -> None:
+        self.__new_surface = pygame.Surface((width, height))
+        self.display.blit(self.__new_surface, (dest_x, dest_y))
+
+        pygame.draw.rect(self.__new_surface,
+                         self.draw_color,
+                         pygame.Rect(self.__start_pos[0], self.__start_pos[1], width, height)
+                         )
+
     def draw(self) -> None:
         if pygame.mouse.get_pressed()[0] and self.__figure_type == instruments_settings.PATTERN_TYPE_RECT:
 
@@ -68,50 +77,27 @@ class PatternTool(Instrument):
             height = self.mouse_pos[1] - self.__start_pos[1]
 
             if width > -1 and height > -1:
-                self.__new_surface = pygame.Surface((width, height))
-                self.display.blit(self.__new_surface, (self.__start_pos[0], self.__start_pos[1]))
 
-                pygame.draw.rect(self.__new_surface,
-                                 self.draw_color,
-                                 pygame.Rect(self.__start_pos[0], self.__start_pos[1], width, height)
-                                 )
+                self.__create_new_surface(width, height, self.__start_pos[0], self.__start_pos[1])
 
             elif width < 1 and height < 1:
 
                 width = abs(width)
                 height = abs(height)
 
-                self.__new_surface = pygame.Surface((width, height))
-                self.display.blit(self.__new_surface, (self.mouse_pos[0], self.mouse_pos[1]))
-
-                pygame.draw.rect(self.__new_surface,
-                                 self.draw_color,
-                                 pygame.Rect(self.mouse_pos[0], self.mouse_pos[1], width, height)
-                                 )
+                self.__create_new_surface(width, height, self.mouse_pos[0], self.mouse_pos[1])
 
             elif width > -1 and height < 1:
 
                 height = abs(height)
 
-                self.__new_surface = pygame.Surface((width, height))
-                self.display.blit(self.__new_surface, (self.__start_pos[0], self.__start_pos[1] - height))
-
-                pygame.draw.rect(self.__new_surface,
-                                 self.draw_color,
-                                 pygame.Rect(self.mouse_pos[0], self.mouse_pos[1], width, height)
-                                 )
+                self.__create_new_surface(width, height, self.__start_pos[0], self.__start_pos[1] - height)
 
             elif width < 1 and height > -1:
 
                 width = abs(width)
 
-                self.__new_surface = pygame.Surface((width, height))
-                self.display.blit(self.__new_surface, (self.__start_pos[0] - width, self.__start_pos[1]))
-
-                pygame.draw.rect(self.__new_surface,
-                                 self.draw_color,
-                                 pygame.Rect(self.mouse_pos[0], self.mouse_pos[1], width, height)
-                                 )
+                self.__create_new_surface(width, height, self.__start_pos[0] - width, self.__start_pos[1])
 
         else:
             self.__start_pos = None
