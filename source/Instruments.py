@@ -104,3 +104,16 @@ class PatternTool(Instrument):
 
     def set_figure_type(self, new_type) -> None:
         self.__figure_type = new_type
+
+
+class FillTool(Instrument):
+
+    def __init__(self, display, draw_color, mouse_pos, draw_radius):
+        super().__init__(display, draw_color, mouse_pos, draw_radius)
+        self.__bottom_layer = None
+
+    def set_bottom_layer(self):
+        self.__bottom_layer = pygame.Surface.get_at(self.display, self.mouse_pos)
+
+    def draw(self) -> None:
+        pass
