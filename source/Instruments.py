@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import pygame
 
-from configs import instruments_settings, colors
+from configs import instruments_settings
 
 
 class Instrument(ABC):
@@ -83,12 +83,47 @@ class PatternTool(Instrument):
                 self.__new_surface = pygame.Surface((width, height))
                 self.display.blit(self.__new_surface, (self.__start_pos[0], self.__start_pos[1]))
 
-            pygame.draw.rect(self.display,
-                             self.draw_color,
-                             pygame.Rect(self.__start_pos[0], self.__start_pos[1], width, height)
-                             )
+                pygame.draw.rect(self.__new_surface,
+                                 self.draw_color,
+                                 pygame.Rect(self.__start_pos[0], self.__start_pos[1], width, height)
+                                 )
 
-            self.__new_surface.fill(colors.WHITE)
+            elif width < 1 and height < 1:
+
+                width = abs(width)
+                height = abs(height)
+
+                self.__new_surface = pygame.Surface((width, height))
+                self.display.blit(self.__new_surface, (self.mouse_pos[0], self.mouse_pos[1]))
+
+                pygame.draw.rect(self.__new_surface,
+                                 self.draw_color,
+                                 pygame.Rect(self.mouse_pos[0], self.mouse_pos[1], width, height)
+                                 )
+
+            elif width > -1 and height < 1:
+
+                height = abs(height)
+
+                self.__new_surface = pygame.Surface((width, height))
+                self.display.blit(self.__new_surface, (self.__start_pos[0], self.__start_pos[1] - height))
+
+                pygame.draw.rect(self.__new_surface,
+                                 self.draw_color,
+                                 pygame.Rect(self.mouse_pos[0], self.mouse_pos[1], width, height)
+                                 )
+
+            elif width < 1 and height > -1:
+
+                width = abs(width)
+
+                self.__new_surface = pygame.Surface((width, height))
+                self.display.blit(self.__new_surface, (self.__start_pos[0] - width, self.__start_pos[1]))
+
+                pygame.draw.rect(self.__new_surface,
+                                 self.draw_color,
+                                 pygame.Rect(self.mouse_pos[0], self.mouse_pos[1], width, height)
+                                 )
 
         else:
             self.__start_pos = None
