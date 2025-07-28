@@ -41,11 +41,20 @@ class Hand:
     def get_line_size(self) -> int:
         return self.__line_size
 
+    def get_sprite_path(self) -> str:
+        return self.__sprite_path
+
     def set_main_color(self, new_color: colors.color) -> None:
+        self.__main_instrument.set_draw_color(new_color)
         self.__main_color = new_color
 
     def set_main_instrument(self, new_instrument: Instruments.Instrument) -> None:
         self.__main_instrument = new_instrument
 
     def set_line_size(self, new_size: int) -> None:
+        self.__main_instrument.set_draw_radius(new_size)
         self.__line_size = new_size
+
+    def set_sprite_path(self, new_sprite_path) -> None:
+        self.__main_instrument.set_sprite_path(new_sprite_path)
+        self.__sprite_path = new_sprite_path
