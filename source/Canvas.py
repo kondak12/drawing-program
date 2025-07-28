@@ -1,4 +1,4 @@
-import pygame.display
+import pygame
 
 import configs.main_settings
 
@@ -12,9 +12,6 @@ class Canvas:
 
     def __screenshot(self, canvas, path: configs.main_settings.SAVE_SCREENSHOT_PATH) -> None:
         ...
-
-    def render(self) -> None:
-        pygame.display.flip()
 
     def get_canvas_borders(self) -> (int, int):
         return self.__canvas_borders
