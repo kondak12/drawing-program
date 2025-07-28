@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from queue import Queue
+
 import pygame
 
 from configs import instruments_settings
@@ -110,9 +112,11 @@ class FillTool(Instrument):
 
     def __init__(self, display, draw_color, mouse_pos, draw_radius):
         super().__init__(display, draw_color, mouse_pos, draw_radius)
+        self.__x_pos = mouse_pos[0]
+        self.__y_pos = mouse_pos[1]
         self.__bottom_layer = None
 
-    def set_bottom_layer(self):
+    def set_bottom_layer(self) -> None:
         self.__bottom_layer = pygame.Surface.get_at(self.display, self.mouse_pos)
 
     def draw(self) -> None:
