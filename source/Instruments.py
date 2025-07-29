@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import pygame
 
-from configs import main_settings, instruments_settings
+from configs import colors, main_settings, instruments_settings
 
 
 class Instrument(ABC):
@@ -60,12 +60,13 @@ class PatternTool(Instrument):
 
     def __create_new_surface(self, width, height, dest_x, dest_y) -> None:
         self.__new_surface = pygame.Surface((width, height))
-        self.display.blit(self.__new_surface, (dest_x, dest_y))
 
         pygame.draw.rect(self.__new_surface,
                          self.draw_color,
-                         pygame.Rect(self.__start_pos[0], self.__start_pos[1], width, height)
+                         pygame.Rect(0, 0, width, height)
                          )
+
+        self.display.blit(self.__new_surface, (dest_x, dest_y))
 
     def draw(self) -> None:
         if pygame.mouse.get_pressed()[0] and self.__figure_type == instruments_settings.PATTERN_TYPE_RECT:
