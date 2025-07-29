@@ -1,9 +1,7 @@
 from abc import ABC, abstractmethod
-from queue import Queue
-
 import pygame
 
-from configs import instruments_settings
+from configs import main_settings, instruments_settings
 
 
 class Instrument(ABC):
@@ -120,4 +118,28 @@ class FillTool(Instrument):
         self.__bottom_layer = pygame.Surface.get_at(self.display, self.mouse_pos)
 
     def draw(self) -> None:
-        pass
+        if pygame.mouse.get_pressed()[0] == 1:
+            self.set_bottom_layer()
+
+            if self.__bottom_layer == self.draw_color:
+                return
+
+            stack = [self.mouse_pos]
+
+            while stack:
+                current_pixel = stack.pop()
+
+                if pygame.Surface.get_at(self.display, current_pixel) == self.__bottom_layer:
+                    pygame.Surface.set_at(self.display, current_pixel, self.draw_color)
+
+                    if current_pixel[0] + 1 < main_settings.SCREEN_SIZE[0]:
+                        stack.append((current_pixel[0] + 1, current_pixel[1]))
+
+                    if current_pixel[0] - 1 >= 0:
+                        stack.append((current_pixel[0] - 1, current_pixel[1]))
+
+                    if current_pixel[1] + 1 < main_settings.SCREEN_SIZE[1]:
+                        stack.append((current_pixel[0], current_pixel[1] + 1))
+
+                    if current_pixel[1] - 1 >= 0:
+                        stack.append((current_pixel[0], current_pixel[1] - 1))
