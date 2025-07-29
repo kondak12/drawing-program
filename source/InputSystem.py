@@ -3,7 +3,7 @@ import sys
 
 from source.Canvas import Canvas
 from source.Hand import Hand
-from configs import main_settings, colors
+from configs import main_settings, instruments_settings, colors
 
 
 class InputSystem:
@@ -29,6 +29,20 @@ class InputSystem:
         self.__canvas.place_color_button(
             main_settings.SCREEN_SIZE[0] - 100,
             0, colors.BLACK
+        )
+
+        self.__canvas.place_instrument_button(
+            main_settings.SCREEN_SIZE[0] - 50,
+            50,
+            "rect_black.jpg",
+            instruments_settings.PATTERN_TOOL_RECT
+        )
+
+        self.__canvas.place_instrument_button(
+            main_settings.SCREEN_SIZE[0] - 100,
+            50,
+            "brush_black.jpg",
+            instruments_settings.BRUSH_TOOL
         )
 
         self.__hand.update_position()
