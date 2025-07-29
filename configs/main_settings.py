@@ -5,7 +5,7 @@ SCREEN_SIZE = (1200, 800)
 
 BG_COLOR = configs.colors.WHITE
 
-FPS = 60
+FPS = 1200
 
 SCREENSHOT_BOX = ...
 
