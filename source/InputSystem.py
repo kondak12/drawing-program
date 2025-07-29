@@ -45,6 +45,13 @@ class InputSystem:
             instruments_settings.BRUSH_TOOL
         )
 
+        self.__canvas.place_instrument_button(
+            main_settings.SCREEN_SIZE[0] - 50,
+            100,
+            "fill_black.jpg",
+            instruments_settings.FILL_TOOL
+        )
+
         self.__hand.update_position()
 
         self.__hand.draw()
