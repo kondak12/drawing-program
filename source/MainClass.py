@@ -9,6 +9,9 @@ class MainClass:
     def __init__(self):
         self.__screen = pygame.display.set_mode(size=main_settings.SCREEN_SIZE)
         self.__main_loop = MainLoop(self.__screen)
+        self.__caption = "Drawing program"
+
+        pygame.display.set_caption(self.__caption)
 
     def run(self) -> None:
         pygame.init()
