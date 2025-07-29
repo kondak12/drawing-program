@@ -1,7 +1,7 @@
 import pygame
 
 from source import Instruments
-from configs import colors, main_settings
+from configs import colors, main_settings, instruments_settings
 
 
 class Hand:
@@ -72,6 +72,16 @@ class Hand:
     def set_main_color(self, new_color: colors.color) -> None:
         self.__main_instrument.set_draw_color(new_color)
         self.__main_color = new_color
+
+    def set_main_instrument(self, new_instrument) -> None:
+        tool_dict = {
+            instruments_settings.BRUSH_TOOL: self.__replace_on_brush_tool,
+            instruments_settings.FILL_TOOL: self.__replace_on_fill_tool,
+            instruments_settings.PATTERN_TOOL_RECT: self.__replace_on_pattern_tool,
+            instruments_settings.PATTERN_TOOL_CIRCLE: self.__replace_on_pattern_tool
+        }
+
+        tool_dict[new_instrument]()
 
     def set_line_size(self, new_size: int) -> None:
         self.__main_instrument.set_draw_radius(new_size)
