@@ -1,6 +1,6 @@
 import pygame
 
-from configs import main_settings, colors
+from configs import main_settings
 from source import gui, Hand
 
 
@@ -14,12 +14,22 @@ class Canvas:
         self.__button_example = gui.Button(50, 50, self.__display)
 
     def place_color_button(self, x_pos, y_pos, color) -> None:
-        self.__button_example.draw(x_pos,
-                                   y_pos,
-                                   pygame.mouse.get_pos(),
-                                   color,
-                                   lambda: self.__hand.set_main_color(color)
-                                   )
+        self.__button_example.draw_color(
+            x_pos,
+            y_pos,
+            pygame.mouse.get_pos(),
+            color,
+            lambda: self.__hand.set_main_color(color)
+        )
+
+    def place_instrument_button(self, x_pos, y_pos, img_name: str, new_instrument) -> None:
+        self.__button_example.draw_instrument(
+            x_pos,
+            y_pos,
+            pygame.mouse.get_pos(),
+            img_name,
+            lambda: self.__hand.set_main_instrument(new_instrument)
+        )
 
     def __screenshot(self, canvas, path: main_settings.SAVE_SCREENSHOT_PATH) -> None:
         ...
