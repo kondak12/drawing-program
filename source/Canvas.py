@@ -1,6 +1,6 @@
 import pygame
 
-from configs import main_settings
+from configs import main_settings, colors, instruments_settings
 from source import gui, Hand
 
 
@@ -13,7 +13,7 @@ class Canvas:
         self.__screenshot_box = main_settings.SCREENSHOT_BOX
         self.__button_example = gui.Button(50, 50, self.__display)
 
-    def place_color_button(self, x_pos, y_pos, color) -> None:
+    def __place_color_button(self, x_pos, y_pos, color) -> None:
         self.__button_example.draw_color(
             x_pos,
             y_pos,
@@ -22,7 +22,7 @@ class Canvas:
             lambda: self.__hand.set_main_color(color)
         )
 
-    def place_instrument_button(self, x_pos, y_pos, img_name: str, new_instrument) -> None:
+    def __place_instrument_button(self, x_pos, y_pos, img_name: str, new_instrument) -> None:
         self.__button_example.draw_instrument(
             x_pos,
             y_pos,
@@ -30,6 +30,19 @@ class Canvas:
             img_name,
             lambda: self.__hand.set_main_instrument(new_instrument)
         )
+
+    def place_buttons_on_screen(self) -> None:
+        self.__place_instrument_button(main_settings.SCREEN_SIZE[0] - 50, 0, "brush", instruments_settings.BRUSH_TOOL)
+        self.__place_instrument_button(main_settings.SCREEN_SIZE[0] - 100, 0,"rect", instruments_settings.PATTERN_TOOL_RECT)
+        self.__place_instrument_button(main_settings.SCREEN_SIZE[0] - 50, 50, "fill", instruments_settings.FILL_TOOL)
+
+        self.__place_color_button(main_settings.SCREEN_SIZE[0] - 50, 100, colors.RED)
+        self.__place_color_button(main_settings.SCREEN_SIZE[0] - 100, 100, colors.GREEN)
+        self.__place_color_button(main_settings.SCREEN_SIZE[0] - 50, 150, colors.BLUE)
+        self.__place_color_button(main_settings.SCREEN_SIZE[0] - 100, 150, colors.BLACK)
+        self.__place_color_button(main_settings.SCREEN_SIZE[0] - 50, 200, colors.PURPLE)
+        self.__place_color_button(main_settings.SCREEN_SIZE[0] - 100, 200, colors.YELLOW)
+        self.__place_color_button(main_settings.SCREEN_SIZE[0] - 50, 250, colors.ORANGE)
 
     def __screenshot(self, canvas, path: main_settings.SAVE_SCREENSHOT_PATH) -> None:
         ...
