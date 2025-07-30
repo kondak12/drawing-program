@@ -9,8 +9,9 @@ class InputSystem:
 
     def __init__(self, surface: pygame.Surface):
         self.__surface = surface
+        self.__gui = pygame.Surface((100, 1200))
         self.__hand = Hand(self.__surface)
-        self.__canvas = Canvas(self.__surface, self.__hand)
+        self.__canvas = Canvas(self.__surface, self.__gui, self.__hand)
 
     def handle_events(self) -> None:
 
