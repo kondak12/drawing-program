@@ -25,8 +25,10 @@ class Button:
         if x_pos < mouse_pos[0] < x_pos + self.__width and y_pos < mouse_pos[1] < y_pos + self.__height:
 
             if pygame.mouse.get_pressed()[0]:
+                icon = pygame.image.load(os.path.join(r"resources\imgs", f"{img_name + '_grey.jpg'}"))
+                self.__display.blit(icon, (x_pos, y_pos))
                 function()
 
         else:
-            icon = pygame.image.load(os.path.join("resources\imgs", img_name))
+            icon = pygame.image.load(os.path.join(r"resources\imgs", f"{img_name + '_black.jpg'}"))
             self.__display.blit(icon, (x_pos, y_pos))
