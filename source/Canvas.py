@@ -13,6 +13,19 @@ class Canvas:
         self.__canvas_borders = main_settings.CANVAS_BORDERS
         self.__screenshot_box = main_settings.SCREENSHOT_BOX
         self.__button_example = gui.Button(50, 50, self.__gui_region)
+        self.__screenshot = None
+
+    def __export_screen_shot(self) -> None:
+        self.__screenshot = self.__display
+
+        shot = pygame.Surface(main_settings.CANVAS_BORDERS)
+        shot.blit(self.__display, (0, 0), (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1]))
+
+        try:
+            pygame.image.save(shot, main_settings.SAVE_SCREENSHOT_PATH + f"shot.jpg")
+
+        except pygame.error:
+            return
 
     def __place_color_button(self, x_pos, y_pos, color) -> None:
         self.__button_example.draw_color(
@@ -30,6 +43,15 @@ class Canvas:
             pygame.mouse.get_pos(),
             img_name,
             lambda: self.__hand.set_main_instrument(new_instrument)
+        )
+
+    def __place_import_export_button(self, x_pos, y_pos, img_name: str, type) -> None:
+        self.__button_example.draw_instrument(
+            x_pos,
+            y_pos,
+            pygame.mouse.get_pos(),
+            img_name,
+            lambda: type()
         )
 
     def place_buttons_on_screen(self) -> None:
@@ -50,10 +72,10 @@ class Canvas:
         self.__place_color_button(50, 200, colors.YELLOW)
         self.__place_color_button(0, 250, colors.ORANGE)
 
-        self.__display.blit(self.__gui_region, (main_settings.SCREEN_SIZE[0] - 100, 0))
+        # self.__place_import_export_button(0, 750, "import", self.__import_screen_shot)
+        self.__place_import_export_button(50, 750, "export", self.__export_screen_shot)
 
-    def __screenshot(self, canvas, path: main_settings.SAVE_SCREENSHOT_PATH) -> None:
-        ...
+        self.__display.blit(self.__gui_region, (main_settings.SCREEN_SIZE[0] - 100, 0))
 
     def get_canvas_borders(self) -> (int, int):
         return self.__canvas_borders
