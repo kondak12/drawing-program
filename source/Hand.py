@@ -11,26 +11,33 @@ class Hand:
         self.__sprite_path = sprite_path
         self.__main_color = colors.BLACK
         self.__line_size = 30
+        self.__mouse_pos = pygame.mouse.get_pos()
         self.__main_instrument = Instruments.BrushTool(self.__drawing_surface,
                                                        self.__main_color,
-                                                       pygame.mouse.get_pos(),
+                                                       self.__mouse_pos,
                                                        self.__line_size,
                                                        self.__sprite_path
                                                        )
 
-    def update_position(self):
+    def update_position(self) -> None:
+        self.__mouse_pos = pygame.mouse.get_pos()
         self.__main_instrument.set_mouse_pos(pygame.mouse.get_pos())
 
+    def __in_borders(self) -> bool:
+        return 0 <= self.__mouse_pos[0] <= main_settings.CANVAS_BORDERS[0] and 0 <= self.__mouse_pos[1] <= main_settings.CANVAS_BORDERS[1]
+
     def draw(self) -> None:
-        self.__main_instrument.draw()
+        if self.__in_borders():
+            self.__main_instrument.draw()
 
     def wash_draw(self) -> None:
-        if pygame.mouse.get_pressed()[2]:
-            pygame.draw.circle(self.__drawing_surface,
-                               main_settings.BG_COLOR,
-                               pygame.mouse.get_pos(),
-                               self.__line_size
-                               )
+        if self.__in_borders():
+            if pygame.mouse.get_pressed()[2]:
+                pygame.draw.circle(self.__drawing_surface,
+                                   main_settings.BG_COLOR,
+                                   pygame.mouse.get_pos(),
+                                   self.__line_size
+                                   )
 
     def __replace_on_brush_tool(self) -> None:
         self.__main_instrument = Instruments.BrushTool(
