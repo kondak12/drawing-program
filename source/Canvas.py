@@ -1,4 +1,4 @@
-import pygame
+import os, pygame
 
 from configs import main_settings, colors, instruments_settings
 from source import gui, Hand
@@ -22,10 +22,18 @@ class Canvas:
         shot.blit(self.__display, (0, 0), (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1]))
 
         try:
-            pygame.image.save(shot, main_settings.SAVE_SCREENSHOT_PATH + f"shot.jpg")
+            i = 1
+            while True:
+                if os.path.exists(main_settings.SAVE_SCREENSHOT_PATH + f"shot_{i}.jpg"):
+                    i += 1
+                    continue
+                else:
+                    pygame.image.save(shot, main_settings.SAVE_SCREENSHOT_PATH + f"shot_{i}.jpg")
+                    break
 
         except pygame.error:
-            return
+            os.mkdir(main_settings.SAVE_SCREENSHOT_PATH)
+            self.__export_screen_shot()
 
     def __place_color_button(self, x_pos, y_pos, color) -> None:
         self.__button_example.draw_color(
