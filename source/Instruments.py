@@ -36,17 +36,14 @@ class BrushTool(Instrument):
             self.__sprite_size = pygame.image.load(self.__sprite_path).get_rect().size
 
     def draw(self) -> None:
+        if pygame.mouse.get_pressed()[0] and self.__sprite_path is None:
+            pygame.draw.circle(self.display, self.draw_color, self.mouse_pos, self.draw_radius)
 
-        if 0 <= self.mouse_pos[0] <= main_settings.CANVAS_BORDERS[0] and 0 <= self.mouse_pos[1] <= main_settings.CANVAS_BORDERS[1]:
-
-            if pygame.mouse.get_pressed()[0] and self.__sprite_path is None:
-                pygame.draw.circle(self.display, self.draw_color, self.mouse_pos, self.draw_radius)
-
-            elif pygame.mouse.get_pressed()[0] and self.__sprite_path is not None:
-                self.display.blit(self.__sprite_path,
-                                  (self.mouse_pos[0] - (self.__sprite_size[0] // 2),
-                                   self.mouse_pos[1] - self.__sprite_size[1] // 2)
-                                  )
+        elif pygame.mouse.get_pressed()[0] and self.__sprite_path is not None:
+            self.display.blit(self.__sprite_path,
+                              (self.mouse_pos[0] - (self.__sprite_size[0] // 2),
+                               self.mouse_pos[1] - self.__sprite_size[1] // 2)
+                              )
 
     def set_sprite_path(self, new_path: str) -> None:
         self.__sprite_path = new_path
@@ -71,42 +68,39 @@ class PatternTool(Instrument):
         self.display.blit(self.__new_surface, (dest_x, dest_y))
 
     def draw(self) -> None:
+        if pygame.mouse.get_pressed()[0] and self.__figure_type == instruments_settings.PATTERN_TYPE_RECT:
 
-        if 0 <= self.mouse_pos[0] <= main_settings.CANVAS_BORDERS[0] and 0 <= self.mouse_pos[1] <= main_settings.CANVAS_BORDERS[1]:
+            if self.__start_pos is None:
+                self.__start_pos = self.mouse_pos
 
-            if pygame.mouse.get_pressed()[0] and self.__figure_type == instruments_settings.PATTERN_TYPE_RECT:
+            width = self.mouse_pos[0] - self.__start_pos[0]
+            height = self.mouse_pos[1] - self.__start_pos[1]
 
-                if self.__start_pos is None:
-                    self.__start_pos = self.mouse_pos
+            if width > -1 and height > -1:
 
-                width = self.mouse_pos[0] - self.__start_pos[0]
-                height = self.mouse_pos[1] - self.__start_pos[1]
+                self.__create_new_surface(width, height, self.__start_pos[0], self.__start_pos[1])
 
-                if width > -1 and height > -1:
+            elif width < 1 and height < 1:
 
-                    self.__create_new_surface(width, height, self.__start_pos[0], self.__start_pos[1])
+                width = abs(width)
+                height = abs(height)
 
-                elif width < 1 and height < 1:
+                self.__create_new_surface(width, height, self.mouse_pos[0], self.mouse_pos[1])
 
-                    width = abs(width)
-                    height = abs(height)
+            elif width > -1 and height < 1:
 
-                    self.__create_new_surface(width, height, self.mouse_pos[0], self.mouse_pos[1])
+                height = abs(height)
 
-                elif width > -1 and height < 1:
+                self.__create_new_surface(width, height, self.__start_pos[0], self.__start_pos[1] - height)
 
-                    height = abs(height)
+            elif width < 1 and height > -1:
 
-                    self.__create_new_surface(width, height, self.__start_pos[0], self.__start_pos[1] - height)
+                width = abs(width)
 
-                elif width < 1 and height > -1:
+                self.__create_new_surface(width, height, self.__start_pos[0] - width, self.__start_pos[1])
 
-                    width = abs(width)
-
-                    self.__create_new_surface(width, height, self.__start_pos[0] - width, self.__start_pos[1])
-
-            else:
-                self.__start_pos = None
+        else:
+            self.__start_pos = None
 
     def set_figure_type(self, new_type) -> None:
         self.__figure_type = new_type
@@ -124,30 +118,28 @@ class FillTool(Instrument):
         self.__bottom_layer = pygame.Surface.get_at(self.display, self.mouse_pos)
 
     def draw(self) -> None:
-        if 0 <= self.mouse_pos[0] <= main_settings.CANVAS_BORDERS[0] and 0 <= self.mouse_pos[1] <= main_settings.CANVAS_BORDERS[1]:
+        if pygame.mouse.get_pressed()[0] == 1:
+            self.set_bottom_layer()
 
-            if pygame.mouse.get_pressed()[0] == 1:
-                self.set_bottom_layer()
+            if self.__bottom_layer == self.draw_color:
+                return
 
-                if self.__bottom_layer == self.draw_color:
-                    return
+            stack = [self.mouse_pos]
 
-                stack = [self.mouse_pos]
+            while stack:
+                current_pixel = stack.pop()
 
-                while stack:
-                    current_pixel = stack.pop()
+                if pygame.Surface.get_at(self.display, current_pixel) == self.__bottom_layer:
+                    pygame.Surface.set_at(self.display, current_pixel, self.draw_color)
 
-                    if pygame.Surface.get_at(self.display, current_pixel) == self.__bottom_layer:
-                        pygame.Surface.set_at(self.display, current_pixel, self.draw_color)
+                    if current_pixel[0] + 1 < main_settings.SCREEN_SIZE[0]:
+                        stack.append((current_pixel[0] + 1, current_pixel[1]))
 
-                        if current_pixel[0] + 1 < main_settings.SCREEN_SIZE[0]:
-                            stack.append((current_pixel[0] + 1, current_pixel[1]))
+                    if current_pixel[0] - 1 >= 0:
+                        stack.append((current_pixel[0] - 1, current_pixel[1]))
 
-                        if current_pixel[0] - 1 >= 0:
-                            stack.append((current_pixel[0] - 1, current_pixel[1]))
+                    if current_pixel[1] + 1 < main_settings.SCREEN_SIZE[1]:
+                        stack.append((current_pixel[0], current_pixel[1] + 1))
 
-                        if current_pixel[1] + 1 < main_settings.SCREEN_SIZE[1]:
-                            stack.append((current_pixel[0], current_pixel[1] + 1))
-
-                        if current_pixel[1] - 1 >= 0:
-                            stack.append((current_pixel[0], current_pixel[1] - 1))
+                    if current_pixel[1] - 1 >= 0:
+                        stack.append((current_pixel[0], current_pixel[1] - 1))
