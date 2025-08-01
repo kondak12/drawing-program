@@ -35,53 +35,56 @@ class Canvas:
             os.mkdir(main_settings.SAVE_SCREENSHOT_PATH)
             self.__export_screen_shot()
 
-    def __place_color_button(self, x_pos, y_pos, color) -> None:
+    def __place_color_button(self, x_pos, y_pos, event, color) -> None:
         self.__button_example.draw_color(
             x_pos,
             y_pos,
             pygame.mouse.get_pos(),
             color,
+            event,
             lambda: self.__hand.set_main_color(color)
         )
 
-    def __place_instrument_button(self, x_pos, y_pos, img_name: str, new_instrument) -> None:
+    def __place_instrument_button(self, x_pos, y_pos, img_name: str, event, new_instrument) -> None:
         self.__button_example.draw_instrument(
             x_pos,
             y_pos,
             pygame.mouse.get_pos(),
             img_name,
+            event,
             lambda: self.__hand.set_main_instrument(new_instrument)
         )
 
-    def __place_import_export_button(self, x_pos, y_pos, img_name: str, type) -> None:
+    def __place_import_export_button(self, x_pos, y_pos, img_name: str, event, file_action) -> None:
         self.__button_example.draw_instrument(
             x_pos,
             y_pos,
             pygame.mouse.get_pos(),
             img_name,
-            lambda: type()
+            event,
+            lambda: file_action()
         )
 
-    def place_buttons_on_screen(self) -> None:
+    def place_buttons_on_screen(self, event) -> None:
         pygame.draw.rect(self.__gui_region,
                          pygame.color.THECOLORS['grey'],
                          pygame.Rect((0, 0), (100, 1200))
                          )
 
-        self.__place_instrument_button(0, 0, "brush", instruments_settings.BRUSH_TOOL)
-        self.__place_instrument_button(50, 0,"rect", instruments_settings.PATTERN_TOOL_RECT)
-        self.__place_instrument_button(0, 50, "fill", instruments_settings.FILL_TOOL)
+        self.__place_instrument_button(0, 0, "brush", event, instruments_settings.BRUSH_TOOL)
+        self.__place_instrument_button(50, 0,"rect", event, instruments_settings.PATTERN_TOOL_RECT)
+        self.__place_instrument_button(0, 50, "fill", event, instruments_settings.FILL_TOOL)
 
-        self.__place_color_button(0, 100, colors.RED)
-        self.__place_color_button(50, 100, colors.GREEN)
-        self.__place_color_button(0, 150, colors.BLUE)
-        self.__place_color_button(50, 150, colors.BLACK)
-        self.__place_color_button(0, 200, colors.PURPLE)
-        self.__place_color_button(50, 200, colors.YELLOW)
-        self.__place_color_button(0, 250, colors.ORANGE)
+        self.__place_color_button(0, 100, event, colors.RED)
+        self.__place_color_button(50, 100, event, colors.GREEN)
+        self.__place_color_button(0, 150, event, colors.BLUE)
+        self.__place_color_button(50, 150, event, colors.BLACK)
+        self.__place_color_button(0, 200, event, colors.PURPLE)
+        self.__place_color_button(50, 200, event, colors.YELLOW)
+        self.__place_color_button(0, 250, event, colors.ORANGE)
 
-        # self.__place_import_export_button(0, 750, "import", self.__import_screen_shot)
-        self.__place_import_export_button(50, 750, "export", self.__export_screen_shot)
+        # self.__place_import_export_button(0, 750, "import", event, self.__import_screen_shot)
+        self.__place_import_export_button(50, 750, "export", event, self.__export_screen_shot)
 
         self.__display.blit(self.__gui_region, (main_settings.SCREEN_SIZE[0] - 100, 0))
 
