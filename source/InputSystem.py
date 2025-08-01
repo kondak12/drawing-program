@@ -20,7 +20,7 @@ class InputSystem:
                 pygame.quit()
                 sys.exit()
 
-        self.__canvas.place_buttons_on_screen()
+            self.__canvas.place_buttons_on_screen(event)
 
         self.__hand.update_position()
 
