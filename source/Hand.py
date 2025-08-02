@@ -48,12 +48,22 @@ class Hand:
             self.__sprite_path
         )
 
-    def __replace_on_pattern_tool(self) -> None:
+    def __replace_on_pattern_rect_tool(self) -> None:
         self.__main_instrument = Instruments.PatternTool(
             self.__drawing_surface,
             self.__main_color,
             pygame.mouse.get_pos(),
-            self.__line_size
+            self.__line_size,
+            instruments_settings.PATTERN_TYPE_RECT
+        )
+
+    def __replace_on_pattern_circle_tool(self) -> None:
+        self.__main_instrument = Instruments.PatternTool(
+            self.__drawing_surface,
+            self.__main_color,
+            pygame.mouse.get_pos(),
+            self.__line_size,
+            instruments_settings.PATTERN_TYPE_CIRCLE
         )
 
     def __replace_on_fill_tool(self) -> None:
@@ -84,8 +94,8 @@ class Hand:
         tool_dict = {
             instruments_settings.BRUSH_TOOL: self.__replace_on_brush_tool,
             instruments_settings.FILL_TOOL: self.__replace_on_fill_tool,
-            instruments_settings.PATTERN_TOOL_RECT: self.__replace_on_pattern_tool,
-            instruments_settings.PATTERN_TOOL_CIRCLE: self.__replace_on_pattern_tool
+            instruments_settings.PATTERN_TOOL_RECT: self.__replace_on_pattern_rect_tool,
+            instruments_settings.PATTERN_TOOL_CIRCLE: self.__replace_on_pattern_circle_tool
         }
 
         tool_dict[new_instrument]()
