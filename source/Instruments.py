@@ -51,56 +51,66 @@ class BrushTool(Instrument):
 
 class PatternTool(Instrument):
 
-    def __init__(self, display, draw_color, mouse_pos, draw_radius):
+    def __init__(self, display, draw_color, mouse_pos, draw_radius, figure_type):
         super().__init__(display, draw_color, mouse_pos, draw_radius)
-        self.__figure_type = instruments_settings.PATTERN_TYPE_RECT
+        self.__figure_type = figure_type
         self.__start_pos = None
+        self.__background = None
         self.__new_surface = None
 
-    def __create_new_surface(self, width, height, dest_x, dest_y) -> None:
-        self.__new_surface = pygame.Surface((width, height))
+    def __create_new_surface(self, width, height) -> pygame.Surface:
+        surf = pygame.Surface((width, height), pygame.SRCALPHA)
 
-        pygame.draw.rect(self.__new_surface,
-                         self.draw_color,
-                         pygame.Rect(0, 0, width, height)
-                         )
+        if self.__figure_type == instruments_settings.PATTERN_TYPE_RECT:
+            pygame.draw.rect(surf,
+                             self.draw_color,
+                             pygame.Rect(0, 0, width, height),
+                             self.draw_radius)
+        else:
+            pygame.draw.ellipse(surf,
+                             self.draw_color,
+                             (0, 0, width, height),
+                             self.draw_radius)
 
-        self.display.blit(self.__new_surface, (dest_x, dest_y))
+        return surf
 
     def draw(self) -> None:
-        if pygame.mouse.get_pressed()[0] and self.__figure_type == instruments_settings.PATTERN_TYPE_RECT:
+        if pygame.mouse.get_pressed()[0]:
 
             if self.__start_pos is None:
                 self.__start_pos = self.mouse_pos
 
-            width = self.mouse_pos[0] - self.__start_pos[0]
-            height = self.mouse_pos[1] - self.__start_pos[1]
+                self.__background = self.display.copy()
 
-            if width > -1 and height > -1:
+            self.display.blit(self.__background, (0, 0))
 
-                self.__create_new_surface(width, height, self.__start_pos[0], self.__start_pos[1])
+            x0, y0 = self.__start_pos
+            x1, y1 = self.mouse_pos
+            width  = x1 - x0
+            height = y1 - y0
 
-            elif width < 1 and height < 1:
+            if width >= 0 and height >= 0:
+                dest = (x0, y0)
 
-                width = abs(width)
-                height = abs(height)
+            elif width < 0 and height < 0:
+                dest = (x1, y1)
+                width, height = -width, -height
 
-                self.__create_new_surface(width, height, self.mouse_pos[0], self.mouse_pos[1])
+            elif width >= 0 and height < 0:
+                dest = (x0, y1)
+                height = -height
 
-            elif width > -1 and height < 1:
+            else:
+                dest = (x1, y0)
+                width = -width
 
-                height = abs(height)
-
-                self.__create_new_surface(width, height, self.__start_pos[0], self.__start_pos[1] - height)
-
-            elif width < 1 and height > -1:
-
-                width = abs(width)
-
-                self.__create_new_surface(width, height, self.__start_pos[0] - width, self.__start_pos[1])
+            self.__new_surface = self.__create_new_surface(width, height)
+            self.display.blit(self.__new_surface, dest)
 
         else:
             self.__start_pos = None
+            self.__background = None
+            self.__new_surface = None
 
     def set_figure_type(self, new_type) -> None:
         self.__figure_type = new_type
