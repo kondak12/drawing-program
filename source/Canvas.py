@@ -71,9 +71,10 @@ class Canvas:
                          pygame.Rect((0, 0), (100, 1200))
                          )
 
-        self.__place_instrument_button(0, 0, "brush", event, instruments_settings.BRUSH_TOOL)
-        self.__place_instrument_button(50, 0,"rect", event, instruments_settings.PATTERN_TOOL_RECT)
-        self.__place_instrument_button(0, 50, "fill", event, instruments_settings.FILL_TOOL)
+        self.__place_instrument_button(0, 0, "fill", event, instruments_settings.FILL_TOOL)
+        self.__place_instrument_button(50, 0, "brush", event, instruments_settings.BRUSH_TOOL)
+        self.__place_instrument_button(0, 50,"rect", event, instruments_settings.PATTERN_TOOL_RECT)
+        self.__place_instrument_button(50, 50, "circle", event, instruments_settings.PATTERN_TOOL_CIRCLE)
 
         self.__place_color_button(0, 100, event, colors.RED)
         self.__place_color_button(50, 100, event, colors.GREEN)
