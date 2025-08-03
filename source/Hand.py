@@ -23,16 +23,15 @@ class Hand:
         self.__mouse_pos = pygame.mouse.get_pos()
         self.__main_instrument.set_mouse_pos(pygame.mouse.get_pos())
 
-    def in_borders(self) -> bool:
-        return 0 <= self.__mouse_pos[0] <= main_settings.CANVAS_BORDERS[0] and 0 <= self.__mouse_pos[1] <= main_settings.CANVAS_BORDERS[1]
+    def in_display_borders(self) -> bool:
+        return main_settings.SCREEN_SIZE[0] - 100 <= self.__mouse_pos[0]
 
     def draw(self) -> None:
-        if self.in_borders():
+        if not self.in_display_borders():
             self.__main_instrument.draw()
 
     def wash_draw(self) -> None:
-        if self.in_borders():
-            if pygame.mouse.get_pressed()[2]:
+        if not self.in_display_borders() and pygame.mouse.get_pressed()[2]:
                 pygame.draw.circle(self.__drawing_surface,
                                    main_settings.BG_COLOR,
                                    pygame.mouse.get_pos(),
