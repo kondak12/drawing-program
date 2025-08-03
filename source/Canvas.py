@@ -1,5 +1,6 @@
-import os, pygame
+import os, pygame, tkinter
 
+from tkinter import filedialog
 from configs import main_settings, colors, instruments_settings
 from configs.main_settings import CANVAS_CURRENT_SCREEN_NEXT, CANVAS_CURRENT_SCREEN_PREVIOUS
 from source import gui, Hand
@@ -24,7 +25,7 @@ class Canvas:
         self.__action_screen_sequence[CANVAS_CURRENT_SCREEN_NEXT].fill(main_settings.BG_COLOR)
 
     def do_action_screen_cycle(self, event) -> None:
-        if self.__hand.in_borders():
+        if not self.__hand.in_display_borders():
 
             if event.type == pygame.MOUSEBUTTONUP and (event.button == pygame.BUTTON_LEFT or event.button == pygame.BUTTON_RIGHT):
                 new_surface = pygame.Surface(self.__canvas_borders)
@@ -70,19 +71,23 @@ class Canvas:
             (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1])
         )
 
+        main_settings.SAVE_SCREENSHOT_PATH = tkinter.filedialog.asksaveasfilename(
+            confirmoverwrite=True,
+            defaultextension="jpg",
+            initialfile="saved_picture"
+        )
+
         try:
-            i = 1
-            while True:
-                if os.path.exists(main_settings.SAVE_SCREENSHOT_PATH + f"shot_{i}.jpg"):
-                    i += 1
-                    continue
-                else:
-                    pygame.image.save(shot, main_settings.SAVE_SCREENSHOT_PATH + f"shot_{i}.jpg")
-                    break
+            if main_settings.SAVE_SCREENSHOT_PATH[:4] == ".jpg":
+                pygame.image.save(shot, main_settings.SAVE_SCREENSHOT_PATH[:-4])
+            else:
+                pygame.image.save(shot, main_settings.SAVE_SCREENSHOT_PATH)
+
+            if main_settings.SAVE_SCREENSHOT_PATH == '':
+                return
 
         except pygame.error:
-            os.mkdir(main_settings.SAVE_SCREENSHOT_PATH)
-            self.__export_screen_shot()
+            return
 
     def __place_color_button(self, x_pos, y_pos, event, color) -> None:
         self.__button_example.draw_color(
