@@ -11,7 +11,7 @@ class InputSystem:
         self.__surface = surface
         self.__gui = pygame.Surface((100, 1200))
         self.__hand = Hand(self.__surface)
-        self.__canvas = Canvas(self.__surface, self.__gui, self.__hand)
+        self.__canvas = Canvas(self.__surface, self.__hand, self.__gui)
 
     def handle_events(self) -> None:
 
@@ -21,6 +21,8 @@ class InputSystem:
                 sys.exit()
 
             self.__canvas.place_buttons_on_screen(event)
+
+            self.__canvas.do_action_screen_cycle(event)
 
         self.__hand.update_position()
 
