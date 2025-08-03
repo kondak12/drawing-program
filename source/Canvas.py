@@ -1,25 +1,74 @@
 import os, pygame
 
 from configs import main_settings, colors, instruments_settings
+from configs.main_settings import CANVAS_CURRENT_SCREEN_NEXT, CANVAS_CURRENT_SCREEN_PREVIOUS
 from source import gui, Hand
 
 
 class Canvas:
 
-    def __init__(self, display, gui_region, hand: Hand):
+    def __init__(self, display, hand: Hand, gui_region):
+        self.__display = display
         self.__hand = hand
         self.__gui_region = gui_region
-        self.__display = display
+        self.__button_example = gui.Button(50, 50, self.__gui_region)
         self.__canvas_borders = main_settings.CANVAS_BORDERS
         self.__screenshot_box = main_settings.SCREENSHOT_BOX
-        self.__button_example = gui.Button(50, 50, self.__gui_region)
         self.__screenshot = None
+
+        self.__current_action_screen = CANVAS_CURRENT_SCREEN_NEXT
+        self.__action_screen_sequence = {
+            CANVAS_CURRENT_SCREEN_PREVIOUS: None,
+            CANVAS_CURRENT_SCREEN_NEXT: pygame.Surface(self.__canvas_borders)
+        }
+        self.__action_screen_sequence[CANVAS_CURRENT_SCREEN_NEXT].fill(main_settings.BG_COLOR)
+
+    def do_action_screen_cycle(self, event) -> None:
+        if self.__hand.in_borders():
+
+            if event.type == pygame.MOUSEBUTTONUP and (event.button == pygame.BUTTON_LEFT or event.button == pygame.BUTTON_RIGHT):
+                new_surface = pygame.Surface(self.__canvas_borders)
+
+                new_surface.blit(
+                    self.__display,
+                    (0, 0),
+                    (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1])
+                )
+
+                if self.__current_action_screen == CANVAS_CURRENT_SCREEN_NEXT:
+                    self.__action_screen_sequence[CANVAS_CURRENT_SCREEN_NEXT], self.__action_screen_sequence[CANVAS_CURRENT_SCREEN_PREVIOUS] \
+                        = new_surface, self.__action_screen_sequence[CANVAS_CURRENT_SCREEN_NEXT]
+
+                else:
+                    self.__action_screen_sequence[CANVAS_CURRENT_SCREEN_NEXT] = new_surface
+                    self.__current_action_screen = CANVAS_CURRENT_SCREEN_NEXT
+
+    def __back_action(self) -> None:
+        if self.__action_screen_sequence[CANVAS_CURRENT_SCREEN_PREVIOUS] is not None:
+            self.__current_action_screen = CANVAS_CURRENT_SCREEN_PREVIOUS
+            self.__display.blit(
+                self.__action_screen_sequence[CANVAS_CURRENT_SCREEN_PREVIOUS],
+                (0, 0),
+                (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1])
+            )
+
+    def __forward_action(self) -> None:
+        self.__current_action_screen = CANVAS_CURRENT_SCREEN_NEXT
+        self.__display.blit(
+            self.__action_screen_sequence[CANVAS_CURRENT_SCREEN_NEXT],
+            (0, 0),
+            (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1])
+        )
 
     def __export_screen_shot(self) -> None:
         self.__screenshot = self.__display
 
         shot = pygame.Surface(main_settings.CANVAS_BORDERS)
-        shot.blit(self.__display, (0, 0), (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1]))
+        shot.blit(
+            self.__display,
+            (0, 0),
+            (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1])
+        )
 
         try:
             i = 1
@@ -55,14 +104,14 @@ class Canvas:
             lambda: self.__hand.set_main_instrument(new_instrument)
         )
 
-    def __place_import_export_button(self, x_pos, y_pos, img_name: str, event, file_action) -> None:
+    def __place_function_button(self, x_pos, y_pos, img_name: str, event, function) -> None:
         self.__button_example.draw_instrument(
             x_pos,
             y_pos,
             pygame.mouse.get_pos(),
             img_name,
             event,
-            lambda: file_action()
+            lambda: function()
         )
 
     def place_buttons_on_screen(self, event) -> None:
@@ -84,8 +133,11 @@ class Canvas:
         self.__place_color_button(50, 200, event, colors.YELLOW)
         self.__place_color_button(0, 250, event, colors.ORANGE)
 
-        # self.__place_import_export_button(0, 750, "import", event, self.__import_screen_shot)
-        self.__place_import_export_button(50, 750, "export", event, self.__export_screen_shot)
+        self.__place_function_button(50, 600, "action_forward", event, self.__forward_action)
+        self.__place_function_button(0, 600, "action_back", event, self.__back_action)
+
+        # self.__place_function_button(0, 750, "import", event, self.__import_screen_shot)
+        self.__place_function_button(50, 750, "export", event, self.__export_screen_shot)
 
         self.__display.blit(self.__gui_region, (main_settings.SCREEN_SIZE[0] - 100, 0))
 
