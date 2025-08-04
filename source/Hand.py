@@ -10,7 +10,7 @@ class Hand:
         self.__drawing_surface = drawing_surface
         self.__sprite_path = sprite_path
         self.__main_color = colors.BLACK
-        self.__line_size = 30
+        self.__line_size = 5
         self.__mouse_pos = pygame.mouse.get_pos()
         self.__main_instrument = Instruments.BrushTool(self.__drawing_surface,
                                                        self.__main_color,
