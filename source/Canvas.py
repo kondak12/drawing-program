@@ -165,8 +165,8 @@ class Canvas:
 
         self.__place_draw_size_button(25, 400, event)
 
-        self.__place_function_button(50, 600, "action_forward", event, self.__forward_action)
-        self.__place_function_button(0, 600, "action_back", event, self.__back_action)
+        self.__place_function_button(50, 650, "action_forward", event, self.__forward_action)
+        self.__place_function_button(0, 650, "action_back", event, self.__back_action)
 
         self.__place_function_button(0, 750, "import", event, self.__import_screen_shot)
         self.__place_function_button(50, 750, "export", event, self.__export_screen_shot)
