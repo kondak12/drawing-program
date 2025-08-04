@@ -22,6 +22,10 @@ class Button:
                     function()
 
         pygame.draw.rect(self.__gui_region,
+                         self.__canvas.get_hand().get_main_color(),
+                         pygame.Rect(25, 375, 50, 25))
+
+        pygame.draw.rect(self.__gui_region,
                          color,
                          pygame.Rect(x_pos, y_pos, self.__width, self.__height))
 
