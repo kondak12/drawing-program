@@ -12,7 +12,7 @@ class Canvas:
         self.__display = display
         self.__hand = hand
         self.__gui_region = gui_region
-        self.__button_example = gui.Button(50, 50, self.__gui_region)
+        self.__button_example = gui.Button(50, 50, self.__gui_region, self)
         self.__canvas_borders = main_settings.CANVAS_BORDERS
         self.__screenshot_box = main_settings.SCREENSHOT_BOX
         self.__screenshot = None
@@ -136,6 +136,14 @@ class Canvas:
             lambda: function()
         )
 
+    def __place_draw_size_button(self, x_pos, y_pos, event) -> None:
+        self.__button_example.update_draw_radius(
+            x_pos,
+            y_pos,
+            pygame.mouse.get_pos(),
+            event
+        )
+
     def place_buttons_on_screen(self, event) -> None:
         pygame.draw.rect(self.__gui_region,
                          pygame.color.THECOLORS['grey'],
@@ -155,6 +163,8 @@ class Canvas:
         self.__place_color_button(50, 200, event, colors.YELLOW)
         self.__place_color_button(0, 250, event, colors.ORANGE)
 
+        self.__place_draw_size_button(25, 400, event)
+
         self.__place_function_button(50, 600, "action_forward", event, self.__forward_action)
         self.__place_function_button(0, 600, "action_back", event, self.__back_action)
 
@@ -162,6 +172,9 @@ class Canvas:
         self.__place_function_button(50, 750, "export", event, self.__export_screen_shot)
 
         self.__display.blit(self.__gui_region, (main_settings.SCREEN_SIZE[0] - 100, 0))
+
+    def get_hand(self) -> Hand:
+        return self.__hand
 
     def get_canvas_borders(self) -> (int, int):
         return self.__canvas_borders
