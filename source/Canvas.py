@@ -65,7 +65,11 @@ class Canvas:
         main_settings.IMPORT_SCREENSHOT_PATH = tkinter.filedialog.askopenfile()
 
         if main_settings.IMPORT_SCREENSHOT_PATH is not None:
-            new_surface = pygame.image.load(main_settings.IMPORT_SCREENSHOT_PATH).convert()
+
+            try:
+                new_surface = pygame.image.load(main_settings.IMPORT_SCREENSHOT_PATH).convert()
+            except pygame.error:
+                return
 
             if ((new_surface.get_width() != self.__canvas_borders[0] or new_surface.get_height() != self.__canvas_borders[1]) and
                 new_surface.get_width() < self.__canvas_borders[0]):
