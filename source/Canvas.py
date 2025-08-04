@@ -1,4 +1,4 @@
-import os, pygame, tkinter
+import pygame, tkinter
 
 from tkinter import filedialog
 from configs import main_settings, colors, instruments_settings
@@ -61,6 +61,26 @@ class Canvas:
             (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1])
         )
 
+    def __import_screen_shot(self) -> None:
+        main_settings.IMPORT_SCREENSHOT_PATH = tkinter.filedialog.askopenfile()
+
+        if main_settings.IMPORT_SCREENSHOT_PATH is not None:
+            new_surface = pygame.image.load(main_settings.IMPORT_SCREENSHOT_PATH).convert()
+
+            if ((new_surface.get_width() != self.__canvas_borders[0] or new_surface.get_height() != self.__canvas_borders[1]) and
+                new_surface.get_width() < self.__canvas_borders[0]):
+                self.__display.blit(
+                    new_surface,
+                    ((self.__canvas_borders[0] // 2) - (new_surface.get_width() // 2), 0),
+                    (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1])
+                )
+            else:
+                self.__display.blit(
+                    new_surface,
+                    (0, 0),
+                    (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1])
+                )
+
     def __export_screen_shot(self) -> None:
         self.__screenshot = self.__display
 
@@ -71,20 +91,17 @@ class Canvas:
             (0, 0, main_settings.CANVAS_BORDERS[0], main_settings.CANVAS_BORDERS[1])
         )
 
-        main_settings.SAVE_SCREENSHOT_PATH = tkinter.filedialog.asksaveasfilename(
+        main_settings.EXPORT_SCREENSHOT_PATH = tkinter.filedialog.asksaveasfilename(
             confirmoverwrite=True,
-            defaultextension="jpg",
+            defaultextension="png",
             initialfile="saved_picture"
         )
 
         try:
-            if main_settings.SAVE_SCREENSHOT_PATH[:4] == ".jpg":
-                pygame.image.save(shot, main_settings.SAVE_SCREENSHOT_PATH[:-4])
+            if main_settings.EXPORT_SCREENSHOT_PATH[:4] == ".png":
+                pygame.image.save(shot, main_settings.EXPORT_SCREENSHOT_PATH[:-4])
             else:
-                pygame.image.save(shot, main_settings.SAVE_SCREENSHOT_PATH)
-
-            if main_settings.SAVE_SCREENSHOT_PATH == '':
-                return
+                pygame.image.save(shot, main_settings.EXPORT_SCREENSHOT_PATH)
 
         except pygame.error:
             return
@@ -141,7 +158,7 @@ class Canvas:
         self.__place_function_button(50, 600, "action_forward", event, self.__forward_action)
         self.__place_function_button(0, 600, "action_back", event, self.__back_action)
 
-        # self.__place_function_button(0, 750, "import", event, self.__import_screen_shot)
+        self.__place_function_button(0, 750, "import", event, self.__import_screen_shot)
         self.__place_function_button(50, 750, "export", event, self.__export_screen_shot)
 
         self.__display.blit(self.__gui_region, (main_settings.SCREEN_SIZE[0] - 100, 0))
