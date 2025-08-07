@@ -1,0 +1,2 @@
+IMPORT_SCREENSHOT = None
+EXPORT_SCREENSHOT = "screenshots/"
