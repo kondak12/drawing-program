@@ -1,63 +1,77 @@
-import os, pygame
+import pygame
 
-from configs.main_settings import CANVAS_BORDERS
-from configs.instruments_settings import DRAWING_RADIUS_BUTTON_DICT
+from configs.main_settings import CANVAS_BORDERS, MAIN_COLOR_SHOW_COORDINATES, MAIN_INSTRUMENT_SHOW_COORDINATES
+from configs.instruments_settings import LINE_SIZE
+from configs.images import BUTTONS
 
 
 class Button:
 
-    def __init__(self, width, height, gui_region, canvas):
+    def __init__(self, width, height, favorable_region, canvas):
         self.__width = width
         self.__height = height
-        self.__gui_region = gui_region
+        self.__favorable_region = favorable_region
         self.__canvas = canvas
-        self.__current_instrument_size = 1
+        self.__current_line_size_index = 0
 
-    def draw_color(self, x_pos: int, y_pos: int, mouse_pos: (int, int), color, event, function) -> None:
+    def __in_box(self, x_pos: int, y_pos: int) -> None:
+        return ((x_pos + CANVAS_BORDERS[0]) < self.__canvas.get_hand().get_mouse_pos()[0] < (x_pos + self.__width + CANVAS_BORDERS[0])
+                and y_pos < self.__canvas.get_hand().get_mouse_pos()[1] < (y_pos + self.__height))
 
-        if (x_pos + CANVAS_BORDERS[0]) < mouse_pos[0] < (x_pos + self.__width + CANVAS_BORDERS[0]) and y_pos < mouse_pos[1] < (y_pos + self.__height):
+    def __is_press(self, event: pygame.event) -> bool:
+        return event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_LEFT
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == pygame.BUTTON_LEFT:
-                    function()
+    def show_users_uses(self) -> None:
+        pygame.draw.rect(
+            self.__favorable_region,
+            self.__canvas.get_hand().get_main_color(),
+            pygame.Rect(MAIN_COLOR_SHOW_COORDINATES)
+        )
 
-        pygame.draw.rect(self.__gui_region,
-                         self.__canvas.get_hand().get_main_color(),
-                         pygame.Rect(25, 375, 50, 25))
+    def color(self, x_pos: int, y_pos: int, color, event) -> None:
 
-        pygame.draw.rect(self.__gui_region,
-                         color,
-                         pygame.Rect(x_pos, y_pos, self.__width, self.__height))
+        if self.__in_box(x_pos, y_pos) and self.__is_press(event):
+            self.__canvas.get_hand().set_main_color(color)
 
-    def draw_instrument(self, x_pos: int, y_pos: int, mouse_pos: (int, int), img_name: str, event, function) -> None:
+        pygame.draw.rect(
+            self.__favorable_region,
+            color,
+            pygame.Rect(x_pos, y_pos, self.__width, self.__height)
+        )
 
-        if (x_pos + CANVAS_BORDERS[0]) < mouse_pos[0] < (x_pos + self.__width + CANVAS_BORDERS[0]) and y_pos < mouse_pos[1] < (y_pos + self.__height):
+    def instrument(self, x_pos: int, y_pos: int, caps_img_name: str, event) -> None:
 
-            icon = pygame.image.load(os.path.join(r"resources\imgs", f"{img_name + '_grey.jpg'}"))
+        if self.__in_box(x_pos, y_pos):
+            icon = BUTTONS[f"{caps_img_name}"][1]
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == pygame.BUTTON_LEFT:
-                    function()
-
+            if self.__is_press(event):
+                    self.__canvas.get_hand().set_main_instrument(caps_img_name.lower())
         else:
-            icon = pygame.image.load(os.path.join(r"resources\imgs", f"{img_name + '_black.jpg'}"))
+            icon = BUTTONS[f"{caps_img_name}"][0]
 
-        self.__gui_region.blit(icon, (x_pos, y_pos))
+        self.__favorable_region.blit(icon, (x_pos, y_pos))
 
-    def update_draw_radius(self, x_pos: int, y_pos: int, mouse_pos: (int, int), event) -> None:
+    def line_size(self, x_pos: int, y_pos: int, event) -> None:
 
-        if (x_pos + CANVAS_BORDERS[0]) < mouse_pos[0] < (x_pos + self.__width + CANVAS_BORDERS[0]) and y_pos < mouse_pos[1] < (y_pos + self.__height):
+        if self.__in_box(x_pos, y_pos) and self.__is_press(event):
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == pygame.BUTTON_LEFT:
+            if self.__current_line_size_index == 2:
+                self.__current_line_size_index = 0
+            else:
+                self.__current_line_size_index += 1
 
-                    if self.__current_instrument_size == 3:
-                        self.__current_instrument_size = 1
-                    else:
-                        self.__current_instrument_size += 1
+            self.__canvas.get_hand().set_line_size(LINE_SIZE[self.__current_line_size_index])
 
-                    self.__canvas.get_hand().set_line_size(DRAWING_RADIUS_BUTTON_DICT[self.__current_instrument_size][1])
+        icon = BUTTONS["LINE_SIZE"][self.__current_line_size_index]
+        self.__favorable_region.blit(icon, (x_pos, y_pos))
 
-        icon = pygame.image.load(os.path.join(r"resources\imgs", f"{DRAWING_RADIUS_BUTTON_DICT[self.__current_instrument_size][0] + '_black.jpg'}"))
+    def other_function(self, x_pos: int, y_pos: int, img_name, event, function) -> None:
+        if self.__in_box(x_pos, y_pos):
+            icon = BUTTONS[f"{img_name}"][1]
 
-        self.__gui_region.blit(icon, (x_pos, y_pos))
+            if self.__is_press(event):
+                    function()
+        else:
+            icon = BUTTONS[f"{img_name}"][0]
+
+        self.__favorable_region.blit(icon, (x_pos, y_pos))
