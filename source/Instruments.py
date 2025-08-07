@@ -112,6 +112,9 @@ class PatternTool(Instrument):
             self.__background = None
             self.__new_surface = None
 
+    def get_figure_type(self) -> str:
+        return self.__figure_type
+
     def set_figure_type(self, new_type) -> None:
         self.__figure_type = new_type
 
