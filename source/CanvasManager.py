@@ -6,7 +6,7 @@ from configs.main_settings import APPROVED_CANVAS_ACTIONS, UNAPPROVED_CANVAS_ACT
 from source import gui, Hand
 
 
-class Canvas:
+class CanvasManager:
 
     def __init__(self, display, hand: Hand, gui_box):
         self.__display = display
