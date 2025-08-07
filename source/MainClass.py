@@ -1,6 +1,6 @@
 import pygame
 
-from configs import colors, main_settings
+from configs import colors, main_settings, images
 from source.MainLoop import MainLoop
 
 
@@ -11,7 +11,7 @@ class MainClass:
         self.__main_loop = MainLoop(self.__screen)
         self.__caption = "Drawing program"
 
-        pygame.display.set_icon(pygame.image.load("resources\imgs\drawing_program_logo.png"))
+        pygame.display.set_icon(images.PROGRAM_LOGO)
         pygame.display.set_caption(self.__caption)
 
     def run(self) -> None:
