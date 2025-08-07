@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from source.Canvas import Canvas
+from source.CanvasManager import CanvasManager
 from source.Hand import Hand
 
 
@@ -11,7 +11,7 @@ class InputSystem:
         self.__surface = surface
         self.__gui = pygame.Surface((100, 1200))
         self.__hand = Hand(self.__surface)
-        self.__canvas = Canvas(self.__surface, self.__hand, self.__gui)
+        self.__canvas = CanvasManager(self.__surface, self.__hand, self.__gui)
 
     def handle_events(self) -> None:
 
