@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import pygame
 
 from configs import main_settings, instruments_settings
+from pygame import gfxdraw
 
 
 class Instrument(ABC):
@@ -28,26 +29,27 @@ class Instrument(ABC):
 
 class BrushTool(Instrument):
 
-    def __init__(self, display, draw_color, mouse_pos, draw_radius, sprite_path=None):
+    def __init__(self, display, draw_color, mouse_pos, draw_radius):
         super().__init__(display, draw_color, mouse_pos, draw_radius)
-        self.__sprite_path = sprite_path
-
-        if self.__sprite_path is not None:
-            self.__sprite_size = pygame.image.load(self.__sprite_path).get_rect().size
+        self.__last_pos = None
 
     def draw(self) -> None:
-        if pygame.mouse.get_pressed()[0] and self.__sprite_path is None:
-            pygame.draw.circle(self.display, self.draw_color, self.mouse_pos, self.draw_radius)
+        if pygame.mouse.get_pressed()[0]:
 
-        elif pygame.mouse.get_pressed()[0] and self.__sprite_path is not None:
-            self.display.blit(self.__sprite_path,
-                              (self.mouse_pos[0] - (self.__sprite_size[0] // 2),
-                               self.mouse_pos[1] - self.__sprite_size[1] // 2)
-                              )
+            if self.__last_pos:
 
-    def set_sprite_path(self, new_path: str) -> None:
-        self.__sprite_path = new_path
+                dist_x = self.mouse_pos[0] - self.__last_pos[0]
+                dist_y = self.mouse_pos[1] - self.__last_pos[1]
+                distance = max(1, int((dist_x ** 2 + dist_y ** 2) ** 0.5))
 
+                for i in range(distance):
+                    x = int(self.__last_pos[0] + dist_x * i / distance)
+                    y = int(self.__last_pos[1] + dist_y * i / distance)
+                    pygame.draw.circle(self.display, self.draw_color, (x, y), self.draw_radius // 2)
+            self.__last_pos = self.mouse_pos
+
+        else:
+            self.__last_pos = None
 
 class PatternTool(Instrument):
 
