@@ -16,8 +16,7 @@ class Hand:
             self.__drawing_surface,
             self.__main_color,
             self.__mouse_pos,
-            self.__line_size,
-            self.__sprite_path
+            self.__line_size
         )
 
     def update_position(self) -> None:
@@ -28,7 +27,6 @@ class Hand:
         return main_settings.GUI_BOX_POSITION[0] <= self.__mouse_pos[0]
 
     def draw(self) -> None:
-        print(self.get_main_instrument())
         if not self.in_display_borders():
             self.__main_instrument.draw()
 
@@ -46,8 +44,7 @@ class Hand:
             self.__drawing_surface,
             self.__main_color,
             self.__mouse_pos,
-            self.__line_size,
-            self.__sprite_path
+            self.__line_size
         )
 
     def __replace_on_pattern_rect_tool(self) -> None:
@@ -108,7 +105,3 @@ class Hand:
     def set_line_size(self, new_size: int) -> None:
         self.__main_instrument.set_draw_radius(new_size)
         self.__line_size = new_size
-
-    def set_sprite_path(self, new_sprite_path) -> None:
-        self.__main_instrument.set_sprite_path(new_sprite_path)
-        self.__sprite_path = new_sprite_path
