@@ -1,6 +1,7 @@
 import pygame
 import sys
 
+from configs.main_settings import GUI_BOX_SIZE
 from source.CanvasManager import CanvasManager
 from source.Hand import Hand
 
@@ -9,7 +10,7 @@ class InputSystem:
 
     def __init__(self, surface: pygame.Surface):
         self.__surface = surface
-        self.__gui = pygame.Surface((100, 1200))
+        self.__gui = pygame.Surface(GUI_BOX_SIZE)
         self.__hand = Hand(self.__surface)
         self.__canvas = CanvasManager(self.__surface, self.__hand, self.__gui)
 
