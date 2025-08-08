@@ -38,12 +38,11 @@ class CanvasManager:
             )
 
             if self.__current_action_screen == APPROVED_CANVAS_ACTIONS:
-                self.__action_screen_sequence[APPROVED_CANVAS_ACTIONS], self.__action_screen_sequence[UNAPPROVED_CANVAS_ACTIONS] \
-                    = new_surface, self.__action_screen_sequence[APPROVED_CANVAS_ACTIONS]
-
+                self.__action_screen_sequence[UNAPPROVED_CANVAS_ACTIONS] = self.__action_screen_sequence[APPROVED_CANVAS_ACTIONS]
             else:
-                self.__action_screen_sequence[APPROVED_CANVAS_ACTIONS] = new_surface
                 self.__current_action_screen = APPROVED_CANVAS_ACTIONS
+
+            self.__action_screen_sequence[APPROVED_CANVAS_ACTIONS] = new_surface
 
     def __back_action(self) -> None:
         if self.__action_screen_sequence[UNAPPROVED_CANVAS_ACTIONS] is not None:
