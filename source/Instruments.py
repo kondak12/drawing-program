@@ -32,9 +32,8 @@ class BrushTool(Instrument):
         super().__init__(display, draw_color, mouse_pos, draw_radius)
         self.__last_pos = None
 
-    def draw(self) -> None:
-        if pygame.mouse.get_pressed()[0]:
-
+    def __draw_example(self, mouse_button_target: int) -> None:
+        if pygame.mouse.get_pressed()[mouse_button_target]:
             if self.__last_pos:
 
                 dist_x = self.mouse_pos[0] - self.__last_pos[0]
@@ -49,6 +48,12 @@ class BrushTool(Instrument):
 
         else:
             self.__last_pos = None
+
+    def draw(self) -> None:
+        self.__draw_example(0)
+
+    def wash_draw(self) -> None:
+        self.__draw_example(2)
 
 
 class FillTool(Instrument):
