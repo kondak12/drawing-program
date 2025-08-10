@@ -16,5 +16,29 @@ YELLOW = color.THECOLORS['yellow']
 
 ORANGE = color.THECOLORS['orange']
 
+BLUE_GREEN = color.THECOLORS['blue4']
 
-COLORS = [WHITE, BLACK, RED, GREEN, BLUE]
+MAROON = color.THECOLORS['maroon']
+
+CYAN = color.THECOLORS['cyan']
+
+PINK = color.THECOLORS['pink']
+
+ORCHID = color.THECOLORS['orchid']
+
+
+COLORS = [
+    WHITE,
+    BLACK,
+    RED,
+    GREEN,
+    BLUE,
+    PURPLE,
+    YELLOW,
+    ORANGE,
+    BLUE_GREEN,
+    MAROON,
+    CYAN,
+    PINK,
+    ORCHID
+]
