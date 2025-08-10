@@ -7,7 +7,7 @@ from source.MainLoop import MainLoop
 class MainClass:
 
     def __init__(self):
-        self.__screen = pygame.display.set_mode(size=main_settings.SCREEN_SIZE)
+        self.__screen = pygame.display.set_mode(size=main_settings.WINDOW_SIZE)
         self.__main_loop = MainLoop(self.__screen)
         self.__caption = "Drawing program"
 
