@@ -9,4 +9,9 @@ EXPORT = "EXPORT"
 ACTION_BACK = "ACTION_BACK"
 ACTION_FORWARD = "ACTION_FORWARD"
 
+TYPE_BRUSH = "<class 'source.Instruments.BrushTool'>"
+TYPE_FILL = "<class 'source.Instruments.FillTool'>"
+TYPE_RECT = "<class 'source.Instruments.RectPatternTool'>"
+TYPE_CIRCLE = "<class 'source.Instruments.CirclePatternTool'>"
+
 LINE_SIZE = [5, 15, 30]
