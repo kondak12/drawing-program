@@ -32,7 +32,7 @@ class CanvasManager:
         return event.type == pygame.MOUSEBUTTONUP and (event.button == pygame.BUTTON_LEFT or event.button == pygame.BUTTON_RIGHT)
 
     def do_action_screen_cycle(self, event) -> None:
-        if not self.__hand.in_display_borders() and self.__check_cycle_condition(event):
+        if not self.__hand.in_gui_borders() and self.__check_cycle_condition(event):
 
             new_surface = pygame.Surface(CANVAS_SIZE)
 
