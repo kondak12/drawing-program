@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 import pygame
 
-from configs import main_settings, instruments_settings
-from pygame import gfxdraw
+from configs import main_settings
 
 
 class Instrument(ABC):
@@ -51,75 +50,6 @@ class BrushTool(Instrument):
         else:
             self.__last_pos = None
 
-class PatternTool(Instrument):
-
-    def __init__(self, display, draw_color, mouse_pos, draw_radius, figure_type):
-        super().__init__(display, draw_color, mouse_pos, draw_radius)
-        self.__figure_type = figure_type
-        self.__start_pos = None
-        self.__background = None
-        self.__new_surface = None
-
-    def __create_new_surface(self, width, height) -> pygame.Surface:
-        surf = pygame.Surface((width, height), pygame.SRCALPHA)
-
-        if self.__figure_type == instruments_settings.PATTERN_TYPE_RECT:
-            pygame.draw.rect(surf,
-                             self.draw_color,
-                             pygame.Rect(0, 0, width, height),
-                             self.draw_radius)
-        else:
-            pygame.draw.ellipse(surf,
-                             self.draw_color,
-                             (0, 0, width, height),
-                             self.draw_radius)
-
-        return surf
-
-    def draw(self) -> None:
-        if pygame.mouse.get_pressed()[0]:
-
-            if self.__start_pos is None:
-                self.__start_pos = self.mouse_pos
-
-                self.__background = self.display.copy()
-
-            self.display.blit(self.__background, (0, 0))
-
-            x0, y0 = self.__start_pos
-            x1, y1 = self.mouse_pos
-            width  = x1 - x0
-            height = y1 - y0
-
-            if width >= 0 and height >= 0:
-                dest = (x0, y0)
-
-            elif width < 0 and height < 0:
-                dest = (x1, y1)
-                width, height = -width, -height
-
-            elif width >= 0 and height < 0:
-                dest = (x0, y1)
-                height = -height
-
-            else:
-                dest = (x1, y0)
-                width = -width
-
-            self.__new_surface = self.__create_new_surface(width, height)
-            self.display.blit(self.__new_surface, dest)
-
-        else:
-            self.__start_pos = None
-            self.__background = None
-            self.__new_surface = None
-
-    def get_figure_type(self) -> str:
-        return self.__figure_type
-
-    def set_figure_type(self, new_type) -> None:
-        self.__figure_type = new_type
-
 
 class FillTool(Instrument):
 
@@ -147,14 +77,101 @@ class FillTool(Instrument):
                 if pygame.Surface.get_at(self.display, current_pixel) == self.__bottom_layer:
                     pygame.Surface.set_at(self.display, current_pixel, self.draw_color)
 
-                    if current_pixel[0] + 1 < main_settings.SCREEN_SIZE[0]:
+                    if current_pixel[0] + 1 < main_settings.CANVAS_SIZE[0]:
                         stack.append((current_pixel[0] + 1, current_pixel[1]))
 
                     if current_pixel[0] - 1 >= 0:
                         stack.append((current_pixel[0] - 1, current_pixel[1]))
 
-                    if current_pixel[1] + 1 < main_settings.SCREEN_SIZE[1]:
+                    if current_pixel[1] + 1 < main_settings.CANVAS_SIZE[1]:
                         stack.append((current_pixel[0], current_pixel[1] + 1))
 
                     if current_pixel[1] - 1 >= 0:
                         stack.append((current_pixel[0], current_pixel[1] - 1))
+
+
+class PatternTool(Instrument):
+
+    def __init__(self, display, draw_color, mouse_pos, draw_radius):
+        super().__init__(display, draw_color, mouse_pos, draw_radius)
+        self._start_pos = None
+        self._background = None
+        self._new_surface = None
+
+    @abstractmethod
+    def _create_new_surface(self, width, height) -> pygame.Surface:
+        pass
+
+    def draw(self) -> None:
+        if pygame.mouse.get_pressed()[0]:
+
+            if self.__start_pos is None:
+                self.__start_pos = self.mouse_pos
+
+                self.__background = self.display.copy()
+
+            self.display.blit(self.__background, main_settings.ZERO_COORDINATES)
+
+            x0, y0 = self.__start_pos
+            x1, y1 = self.mouse_pos
+            width  = x1 - x0
+            height = y1 - y0
+
+            if width >= 0 and height >= 0:
+                dest = (x0, y0)
+
+            elif width < 0 and height < 0:
+                dest = (x1, y1)
+                width, height = -width, -height
+
+            elif width >= 0 and height < 0:
+                dest = (x0, y1)
+                height = -height
+
+            else:
+                dest = (x1, y0)
+                width = -width
+
+            self.__new_surface = self._create_new_surface(width, height)
+            self.display.blit(self.__new_surface, dest)
+
+        else:
+            self.__start_pos = None
+            self.__background = None
+            self.__new_surface = None
+
+
+class RectPatternTool(PatternTool):
+
+    def __init__(self, display, draw_color, mouse_pos, draw_radius):
+        super().__init__(display, draw_color, mouse_pos, draw_radius)
+
+    def _create_new_surface(self, width, height) -> pygame.Surface:
+        surf = pygame.Surface((width, height), pygame.SRCALPHA)
+
+        pygame.draw.rect(
+            surf,
+            self.draw_color,
+            pygame.Rect(0, 0, width, height),
+            self.draw_radius
+        )
+
+        return surf
+
+
+class CirclePatternTool(PatternTool):
+
+    def __init__(self, display, draw_color, mouse_pos, draw_radius):
+        super().__init__(display, draw_color, mouse_pos, draw_radius)
+
+    def _create_new_surface(self, width, height) -> pygame.Surface:
+        surf = pygame.Surface((width, height), pygame.SRCALPHA)
+
+        pygame.draw.ellipse(
+            surf,
+            self.draw_color,
+            (0, 0, width, height),
+            self.draw_radius
+        )
+
+        return surf
