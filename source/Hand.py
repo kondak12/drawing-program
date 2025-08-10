@@ -83,10 +83,10 @@ class Hand:
 
     def get_main_instrument_type(self) -> str:
         tool_dict = {
-            instruments_settings.BRUSH_TOOL: instruments_settings.BRUSH_TOOL,
-            instruments_settings.FILL_TOOL: instruments_settings.FILL_TOOL,
-            instruments_settings.RECT_TOOL: instruments_settings.RECT_TOOL,
-            instruments_settings.CIRCLE_TOOL: instruments_settings.CIRCLE_TOOL
+            instruments_settings.TYPE_BRUSH: instruments_settings.BRUSH_TOOL,
+            instruments_settings.TYPE_FILL: instruments_settings.FILL_TOOL,
+            instruments_settings.TYPE_RECT: instruments_settings.RECT_TOOL,
+            instruments_settings.TYPE_CIRCLE: instruments_settings.CIRCLE_TOOL
         }
 
         return tool_dict[f"{type(self.__main_instrument)}"]
