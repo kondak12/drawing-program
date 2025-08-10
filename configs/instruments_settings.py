@@ -3,12 +3,6 @@ FILL_TOOL = "FILL"
 RECT_TOOL = "RECT"
 CIRCLE_TOOL = "CIRCLE"
 
-IMPORT = "IMPORT"
-EXPORT = "EXPORT"
-
-ACTION_BACK = "ACTION_BACK"
-ACTION_FORWARD = "ACTION_FORWARD"
-
 TYPE_BRUSH = "<class 'source.Instruments.BrushTool'>"
 TYPE_FILL = "<class 'source.Instruments.FillTool'>"
 TYPE_RECT = "<class 'source.Instruments.RectPatternTool'>"
