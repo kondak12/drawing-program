@@ -24,7 +24,7 @@ class Hand:
         self.__main_instrument.set_mouse_pos(pygame.mouse.get_pos())
 
     def in_display_borders(self) -> bool:
-        return main_settings.GUI_BOX_POSITION[0] <= self.__mouse_pos[0]
+        return main_settings.GUI_REGION_POSITION[0] <= self.__mouse_pos[0]
 
     def draw(self) -> None:
         if not self.in_display_borders():
@@ -34,9 +34,9 @@ class Hand:
         if not self.in_display_borders() and pygame.mouse.get_pressed()[2]:
                 pygame.draw.circle(
                     self.__drawing_surface,
-                   main_settings.BG_COLOR,
-                   self.__mouse_pos,
-                   self.__line_size
+                    main_settings.BG_COLOR,
+                    self.__mouse_pos,
+                    self.__line_size
                 )
 
     def __replace_on_brush_tool(self) -> None:
@@ -48,21 +48,19 @@ class Hand:
         )
 
     def __replace_on_pattern_rect_tool(self) -> None:
-        self.__main_instrument = Instruments.PatternTool(
+        self.__main_instrument = Instruments.RectPatternTool(
             self.__drawing_surface,
             self.__main_color,
             self.__mouse_pos,
-            self.__line_size,
-            instruments_settings.PATTERN_TYPE_RECT
+            self.__line_size
         )
 
     def __replace_on_pattern_circle_tool(self) -> None:
-        self.__main_instrument = Instruments.PatternTool(
+        self.__main_instrument = Instruments.CirclePatternTool(
             self.__drawing_surface,
             self.__main_color,
             self.__mouse_pos,
-            self.__line_size,
-            instruments_settings.PATTERN_TYPE_CIRCLE
+            self.__line_size
         )
 
     def __replace_on_fill_tool(self) -> None:
@@ -78,6 +76,16 @@ class Hand:
 
     def get_main_instrument(self) -> Instruments.Instrument:
         return self.__main_instrument
+
+    def get_main_instrument_type(self) -> str:
+        tool_dict = {
+            "<class 'source.Instruments.BrushTool'>": instruments_settings.BRUSH_TOOL,
+            "<class 'source.Instruments.FillTool'>": instruments_settings.FILL_TOOL,
+            "<class 'source.Instruments.RectPatternTool'>": instruments_settings.RECT_TOOL,
+            "<class 'source.Instruments.CirclePatternTool'>": instruments_settings.CIRCLE_TOOL
+        }
+
+        return tool_dict[f"{type(self.__main_instrument)}"]
 
     def get_line_size(self) -> int:
         return self.__line_size
@@ -96,8 +104,8 @@ class Hand:
         tool_dict = {
             instruments_settings.BRUSH_TOOL: self.__replace_on_brush_tool,
             instruments_settings.FILL_TOOL: self.__replace_on_fill_tool,
-            instruments_settings.PATTERN_TOOL_RECT: self.__replace_on_pattern_rect_tool,
-            instruments_settings.PATTERN_TOOL_CIRCLE: self.__replace_on_pattern_circle_tool
+            instruments_settings.RECT_TOOL: self.__replace_on_pattern_rect_tool,
+            instruments_settings.CIRCLE_TOOL: self.__replace_on_pattern_circle_tool
         }
 
         tool_dict[new_instrument]()
