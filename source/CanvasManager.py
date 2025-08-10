@@ -1,10 +1,16 @@
 import pygame
 
 from configs import main_settings, colors
-from configs.main_settings import APPROVED_CANVAS_ACTIONS, UNAPPROVED_CANVAS_ACTIONS, CANVAS_SIZE, ZERO_COORDINATES, CANVAS_BOX, GUI_REGION_SIZE
-from configs.instruments_settings import BRUSH_TOOL, FILL_TOOL, RECT_TOOL, CIRCLE_TOOL, ACTION_BACK, ACTION_FORWARD, EXPORT, IMPORT
+from configs.instruments_settings import BRUSH_TOOL, FILL_TOOL, RECT_TOOL, CIRCLE_TOOL
 from source import gui, Hand
 from source.FileHandler import FileHandler
+from configs.main_settings import (
+    APPROVED_CANVAS_ACTIONS, UNAPPROVED_CANVAS_ACTIONS,
+    CANVAS_SIZE, ZERO_COORDINATES,
+    CANVAS_BOX, GUI_REGION_SIZE,
+    ACTION_BACK, ACTION_FORWARD,
+    EXPORT, IMPORT
+)
 
 
 class CanvasManager:
