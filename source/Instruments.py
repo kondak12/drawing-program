@@ -32,9 +32,8 @@ class BrushTool(Instrument):
         super().__init__(display, draw_color, mouse_pos, draw_radius)
         self.__last_pos = None
 
-    def draw(self) -> None:
-        if pygame.mouse.get_pressed()[0]:
-
+    def __draw_example(self, mouse_button_target: int) -> None:
+        if pygame.mouse.get_pressed()[mouse_button_target]:
             if self.__last_pos:
 
                 dist_x = self.mouse_pos[0] - self.__last_pos[0]
@@ -50,6 +49,12 @@ class BrushTool(Instrument):
         else:
             self.__last_pos = None
 
+    def draw(self) -> None:
+        self.__draw_example(0)
+
+    def wash_draw(self) -> None:
+        self.__draw_example(2)
+
 
 class FillTool(Instrument):
 
@@ -59,11 +64,17 @@ class FillTool(Instrument):
         self.__y_pos = mouse_pos[1]
         self.__bottom_layer = None
 
+    def __in_canvas(self) -> bool:
+        width = main_settings.CANVAS_SIZE[0]
+        height = main_settings.CANVAS_SIZE[1]
+
+        return (0 <= self.mouse_pos[0] <= width) and (0 <= self.mouse_pos[1] <= height)
+
     def set_bottom_layer(self) -> None:
         self.__bottom_layer = pygame.Surface.get_at(self.display, self.mouse_pos)
 
     def draw(self) -> None:
-        if pygame.mouse.get_pressed()[0] == 1:
+        if self.__in_canvas() and pygame.mouse.get_pressed()[0] == 1:
             self.set_bottom_layer()
 
             if self.__bottom_layer == self.draw_color:
@@ -105,14 +116,14 @@ class PatternTool(Instrument):
     def draw(self) -> None:
         if pygame.mouse.get_pressed()[0]:
 
-            if self.__start_pos is None:
-                self.__start_pos = self.mouse_pos
+            if self._start_pos is None:
+                self._start_pos = self.mouse_pos
 
-                self.__background = self.display.copy()
+                self._background = self.display.copy()
 
-            self.display.blit(self.__background, main_settings.ZERO_COORDINATES)
+            self.display.blit(self._background, main_settings.ZERO_COORDINATES)
 
-            x0, y0 = self.__start_pos
+            x0, y0 = self._start_pos
             x1, y1 = self.mouse_pos
             width  = x1 - x0
             height = y1 - y0
@@ -132,13 +143,13 @@ class PatternTool(Instrument):
                 dest = (x1, y0)
                 width = -width
 
-            self.__new_surface = self._create_new_surface(width, height)
-            self.display.blit(self.__new_surface, dest)
+            self._new_surface = self._create_new_surface(width, height)
+            self.display.blit(self._new_surface, dest)
 
         else:
-            self.__start_pos = None
-            self.__background = None
-            self.__new_surface = None
+            self._start_pos = None
+            self._background = None
+            self._new_surface = None
 
 
 class RectPatternTool(PatternTool):

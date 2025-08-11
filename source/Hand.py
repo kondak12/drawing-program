@@ -2,6 +2,7 @@ import pygame
 
 from source import Instruments
 from configs import colors, main_settings, instruments_settings
+from configs.main_settings import BG_COLOR
 
 
 class Hand:
@@ -12,6 +13,14 @@ class Hand:
         self.__main_color = colors.BLACK
         self.__line_size = 5
         self.__mouse_pos = pygame.mouse.get_pos()
+
+        self.__eraser = Instruments.BrushTool(
+            self.__drawing_surface,
+            BG_COLOR,
+            self.__mouse_pos,
+            self.__line_size
+        )
+
         self.__main_instrument = Instruments.BrushTool(
             self.__drawing_surface,
             self.__main_color,
@@ -21,23 +30,23 @@ class Hand:
 
     def update_position(self) -> None:
         self.__mouse_pos = pygame.mouse.get_pos()
-        self.__main_instrument.set_mouse_pos(pygame.mouse.get_pos())
+        self.__eraser.set_mouse_pos(self.__mouse_pos)
+        self.__main_instrument.set_mouse_pos(self.__mouse_pos)
 
-    def in_display_borders(self) -> bool:
-        return main_settings.GUI_REGION_POSITION[0] <= self.__mouse_pos[0]
+    def in_gui_borders(self) -> bool:
+        gui_x_pos = main_settings.GUI_REGION_POSITION[0]
+        gui_y_pos = main_settings.GUI_REGION_SIZE[1]
+        window_x_pos = main_settings.WINDOW_SIZE[0]
+
+        return (gui_x_pos <= self.__mouse_pos[0] <= window_x_pos) and (0 <= self.__mouse_pos[1] <= gui_y_pos)
 
     def draw(self) -> None:
-        if not self.in_display_borders():
+        if not self.in_gui_borders():
             self.__main_instrument.draw()
 
     def wash_draw(self) -> None:
-        if not self.in_display_borders() and pygame.mouse.get_pressed()[2]:
-                pygame.draw.circle(
-                    self.__drawing_surface,
-                    main_settings.BG_COLOR,
-                    self.__mouse_pos,
-                    self.__line_size
-                )
+        if not self.in_gui_borders():
+            self.__eraser.wash_draw()
 
     def __replace_on_brush_tool(self) -> None:
         self.__main_instrument = Instruments.BrushTool(
@@ -79,10 +88,10 @@ class Hand:
 
     def get_main_instrument_type(self) -> str:
         tool_dict = {
-            "<class 'source.Instruments.BrushTool'>": instruments_settings.BRUSH_TOOL,
-            "<class 'source.Instruments.FillTool'>": instruments_settings.FILL_TOOL,
-            "<class 'source.Instruments.RectPatternTool'>": instruments_settings.RECT_TOOL,
-            "<class 'source.Instruments.CirclePatternTool'>": instruments_settings.CIRCLE_TOOL
+            instruments_settings.TYPE_BRUSH: instruments_settings.BRUSH_TOOL,
+            instruments_settings.TYPE_FILL: instruments_settings.FILL_TOOL,
+            instruments_settings.TYPE_RECT: instruments_settings.RECT_TOOL,
+            instruments_settings.TYPE_CIRCLE: instruments_settings.CIRCLE_TOOL
         }
 
         return tool_dict[f"{type(self.__main_instrument)}"]
@@ -111,5 +120,6 @@ class Hand:
         tool_dict[new_instrument]()
 
     def set_line_size(self, new_size: int) -> None:
-        self.__main_instrument.set_draw_radius(new_size)
         self.__line_size = new_size
+        self.__main_instrument.set_draw_radius(self.__line_size)
+        self.__eraser.set_draw_radius(self.__line_size)
