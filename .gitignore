@@ -12,6 +12,8 @@ wheels/
 .env
 .vscode/s
 screenshots/
+dist/
+*.spec
 
 #info files
 TODO.txt
