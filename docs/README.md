@@ -36,7 +36,6 @@ pip install -r requirements.txt
 ```
 
 ### 3. Запуск программы
-У вас должен быть установлен [uv](https://github.com/astral-sh/uv)
 ``` bash
-uv run drawing-program
+python app.py
 ```
