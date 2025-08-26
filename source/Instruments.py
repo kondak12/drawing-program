@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import pygame
 
+from collections import deque
+
 from configs import main_settings
 
 
@@ -74,31 +76,45 @@ class FillTool(Instrument):
         self.__bottom_layer = pygame.Surface.get_at(self.display, self.mouse_pos)
 
     def draw(self) -> None:
-        if self.__in_canvas() and pygame.mouse.get_pressed()[0] == 1:
+        if self.__in_canvas() and pygame.mouse.get_pressed()[0]:
             self.set_bottom_layer()
 
-            if self.__bottom_layer == self.draw_color:
+            surface = self.display
+            target_color = surface.map_rgb(self.__bottom_layer)
+            fill_color = surface.map_rgb(self.draw_color)
+
+            if target_color == fill_color:
                 return
 
-            stack = [self.mouse_pos]
+            surface.lock()
+            px = pygame.PixelArray(surface)
+            w, h = main_settings.CANVAS_SIZE
+            q = deque([self.mouse_pos])
 
-            while stack:
-                current_pixel = stack.pop()
+            while q:
+                x, y = q.popleft()
 
-                if pygame.Surface.get_at(self.display, current_pixel) == self.__bottom_layer:
-                    pygame.Surface.set_at(self.display, current_pixel, self.draw_color)
+                if not (0 <= x < w and 0 <= y < h) or px[x, y] != target_color:
+                    continue
 
-                    if current_pixel[0] + 1 < main_settings.CANVAS_SIZE[0]:
-                        stack.append((current_pixel[0] + 1, current_pixel[1]))
+                left = x
+                while left >= 0 and px[left, y] == target_color:
+                    px[left, y] = fill_color
+                    left -= 1
 
-                    if current_pixel[0] - 1 >= 0:
-                        stack.append((current_pixel[0] - 1, current_pixel[1]))
+                right = x + 1
+                while right < w and px[right, y] == target_color:
+                    px[right, y] = fill_color
+                    right += 1
 
-                    if current_pixel[1] + 1 < main_settings.CANVAS_SIZE[1]:
-                        stack.append((current_pixel[0], current_pixel[1] + 1))
+                for i in range(left + 1, right):
+                    if y > 0 and px[i, y - 1] == target_color:
+                        q.append((i, y - 1))
+                    if y < h - 1 and px[i, y + 1] == target_color:
+                        q.append((i, y + 1))
 
-                    if current_pixel[1] - 1 >= 0:
-                        stack.append((current_pixel[0], current_pixel[1] - 1))
+            px.close()
+            surface.unlock()
 
 
 class PatternTool(Instrument):
